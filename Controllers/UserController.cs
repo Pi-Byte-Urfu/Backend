@@ -25,19 +25,30 @@ public class UserController : Controller
 
     [HttpPost]
     [Route("register")]
-    public int Register(UserRegistrationDto user)
+    public IResult Register(UserRegistrationDto user)
     {
-        var hashedPassword = user.Password.GetHashCode();
-        var newUser = new UserModel() { Email = user.Email, HashedPassword = hashedPassword };
-        
-        var passwordModel = GetPasswordModel(user.Password);
+        try
+        {
+            if (user.Email == "string")
+                throw new Exception("SomeShit"); // TestThing
 
-        var id = _database.Users.Add(newUser).Entity.Id;
-        _database.Passwords.Add(passwordModel);
+            var hashedPassword = user.Password.GetHashCode();
+            var newUser = new UserModel() { Email = user.Email, HashedPassword = hashedPassword };
 
-        _database.SaveChanges();
-        return id;
-    }
+            var passwordModel = GetPasswordModel(user.Password);
+
+            var entityEntry = _database.Users.Add(newUser);
+            _database.Passwords.Add(passwordModel);
+            _database.SaveChanges();
+
+            return Results.Json(new Dictionary<string, int>(){["id"] = entityEntry.Entity.Id});
+        }
+        catch (Exception ex)
+        {
+            HttpContext.Response.StatusCode = 400;
+            return Results.Json(new Dictionary<string, string>() { ["error_message"] = ex.Message });
+        }
+    } 
 
     private PasswordModel GetPasswordModel(string password)
     {
