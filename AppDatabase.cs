@@ -14,7 +14,7 @@ public class AppDatabase : DbContext
     {
         _config = config;
 
-        Database.EnsureDeleted();
+        //Database.EnsureDeleted();
         Database.EnsureCreated();
     }
 
