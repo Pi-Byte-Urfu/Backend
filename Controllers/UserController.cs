@@ -44,7 +44,6 @@ public class UserController : Controller
     [Route("register")]
     public async Task<IResult> Register(UserRegistrationDto user)
     {
-        throw new Exception("≈—À» ¡€ Ã€ «Õ¿À» ◊“Œ ›“Œ “¿ Œ≈");
         if (user.Email == "string")
             throw new BadHttpRequestException("This email is string - test error", 402); // TestThing
 
