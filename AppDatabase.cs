@@ -8,11 +8,13 @@ public class AppDatabase : DbContext
 {
     private IConfiguration _config { get; init; }
     public DbSet<UserModel> Users { get; set; }
+    public DbSet<PasswordModel> Passwords { get; set; }
 
     public AppDatabase(DbContextOptions<AppDatabase> options, IConfiguration config) : base(options)
     {
         _config = config;
 
+        //Database.EnsureDeleted();
         Database.EnsureCreated();
     }
 
