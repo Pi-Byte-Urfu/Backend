@@ -1,14 +1,12 @@
-﻿using Backend.Enums;
+﻿namespace Backend.DataTransferObjects;
 
-namespace Backend.Controllers.DTO;
-
-public class UserRegistrationDto
-{ 
+public class UserRegistrationDto : Dto
+{
     public string Email { get; init; }
     public string Password { get; init; }
 }
 
-public class UserLoginDto
+public class UserLoginDto : Dto
 {
     public string Email { get; init; }
     public string Password { get; init; }

@@ -1,19 +1,14 @@
-using System;
-using System.Security.Cryptography;
-using System.Text;
-
-using Backend.Controllers.DTO;
+using Backend.DataTransferObjects;
 using Backend.Models;
 using Backend.Utils;
 
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace Backend.Controllers;
 
 [ApiController]
-[Route("api/v1/user")]
+[Route("api/v1/users")]
 public class UserController : Controller
 {
     private AppDatabase _database;
@@ -68,7 +63,7 @@ public class UserController : Controller
         var cryptedPassword = AESEncryption.EncryptString(aesSettings, password);
 
         return new PasswordModel() { HashedPassword = hashedPassword, CryptedPassword = cryptedPassword };
-    }
+    }   
 
     [NonAction]
     private async Task<bool> IsPasswordCorrect(UserModel user, UserLoginDto userLoginInfo)
