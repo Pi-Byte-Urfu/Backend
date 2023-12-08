@@ -1,12 +1,9 @@
-﻿using Backend.DataAccessLayer;
-using Backend.DataAccessLayer.Interfaces;
-using Backend.Repositories;
+﻿using Backend.Repositories;
 using Backend.Repositories.Interfaces;
 using Backend.Services;
 using Backend.Services.Interfaces;
 
 using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 
 namespace Backend;
 
@@ -41,13 +38,18 @@ public class DependencyInjectionConfiguring
 
     private void RegisterDatabaseRepositories()
     {
-        _services.AddSingleton<IAccountRepo, AccountRepo>();
-        _services.AddSingleton<IGroupRepo, GroupRepo>();
-        _services.AddSingleton<IUserRepo, UserRepo>();
+        _services.AddScoped<IAccountRepo, AccountRepo>();
+        _services.AddScoped<IGroupRepo, GroupRepo>();
+        _services.AddScoped<IUserRepo, UserRepo>();
+        _services.AddScoped<IStudentRepo, StudentRepo>();
+        _services.AddScoped<ITeacherRepo, TeacherRepo>();
+        _services.AddScoped<IPasswordRepo, PasswordRepo>();
     }
 
     private void RegisterBusinessServices()
     {
-        _services.AddSingleton<IUserService, UserService>();
+        _services.AddScoped<IUserService, UserService>();
+        _services.AddScoped<IPasswordHelperService, PasswordHelperService>();
+        _services.AddScoped<IEncryptionService, EncryptionService>();
     }
 }

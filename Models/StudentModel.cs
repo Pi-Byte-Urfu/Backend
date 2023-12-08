@@ -2,6 +2,6 @@
 
 public class StudentModel : BaseModel
 {
-    public required int AccountId { get; set; }
-    public AccountModel? Account { get; set; }
+    public required int UserId { get; set; }
+    public UserModel? User { get; set; }
 }

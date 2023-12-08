@@ -1,9 +1,12 @@
-﻿namespace Backend.Models;
+﻿using Backend.Enums;
+
+namespace Backend.Models;
 
 public class UserModel : BaseModel
 {
     public required string Email { get; set; }
-    public required int HashedPassword { get; set; } 
+    public required int HashedPassword { get; set; }
+    public required UserType UserType { get; set; }
 }
 
 public class PasswordModel : BaseModel

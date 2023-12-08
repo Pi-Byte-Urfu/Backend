@@ -17,36 +17,36 @@ public abstract class BaseRepo<T> : IBaseRepo<T>
         table = _database.Set<T>();
     }
 
-    public async Task<int> CreateEntityAsync(T dto)
+    public virtual async Task<int> CreateEntityAsync(T entity)
     {
-        var addingTransaction = await table.AddAsync(dto);
+        await table.AddAsync(entity);
         await _database.SaveChangesAsync();
 
-        var databaseValues = await addingTransaction.GetDatabaseValuesAsync();
-        var id = (int)databaseValues["Id"];
-        return id;
+        return entity.Id;
     }
 
-    public async void DeleteEntityByIdAsync(int id)
+    public virtual async Task<int> DeleteEntityByIdAsync(int id)
     {
         table.Remove(await GetEntityByIdAsync(id));
         await _database.SaveChangesAsync();
+        return 0;
     }
 
-    public async Task<List<T>> GetAllEntitiesAsync()
+    public virtual async Task<List<T>> GetAllEntitiesAsync()
     {
         return await table.ToListAsync();
     }
 
-    public async Task<T> GetEntityByIdAsync(int id)
+    public virtual async Task<T> GetEntityByIdAsync(int id)
     {
         return await table.FindAsync(id);
     }
 
-    public async void UpdateEntityAsync(int id, JsonPatchDocument jsonPatchObject)
+    public virtual async Task<int> UpdateEntityAsync(int id, JsonPatchDocument jsonPatchObject)
     {
         var entity = await GetEntityByIdAsync(id);
         jsonPatchObject.ApplyTo(entity);
         await _database.SaveChangesAsync();
+        return id;
     }
 }

@@ -12,7 +12,7 @@ public class UserRepo : BaseRepo<UserModel>, IUserRepo
 
     }
 
-    public async Task<UserModel> GetUserByEmail(string email)
+    public async Task<UserModel> GetUserByEmailAsync(string email)
     {
         return await table.FirstOrDefaultAsync(user => user.Email == email);
     }

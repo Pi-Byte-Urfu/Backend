@@ -10,6 +10,6 @@ public interface IBaseRepo<T>
     public Task<List<T>> GetAllEntitiesAsync();
     public Task<T> GetEntityByIdAsync(int id);
     public Task<int> CreateEntityAsync(T dto);
-    public void UpdateEntityAsync(int id, JsonPatchDocument jsonPatchObject);
-    public void DeleteEntityByIdAsync(int id);
+    public Task<int> UpdateEntityAsync(int id, JsonPatchDocument jsonPatchObject);
+    public Task<int> DeleteEntityByIdAsync(int id);
 }
