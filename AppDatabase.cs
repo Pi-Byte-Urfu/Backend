@@ -7,14 +7,17 @@ namespace Backend;
 public class AppDatabase : DbContext
 {
     private IConfiguration _config { get; init; }
+
     public DbSet<UserModel> Users { get; set; }
     public DbSet<PasswordModel> Passwords { get; set; }
+    public DbSet<AccountModel> Accounts { get; set; }
+    public DbSet<TeacherModel> Teachers { get; set; }
+    public DbSet<StudentModel> Students { get; set; }
+    public DbSet<GroupModel> Groups { get; set; }
 
     public AppDatabase(DbContextOptions<AppDatabase> options, IConfiguration config) : base(options)
     {
         _config = config;
-
-        //Database.EnsureDeleted();
         Database.EnsureCreated();
     }
 
