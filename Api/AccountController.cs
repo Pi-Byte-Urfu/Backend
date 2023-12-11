@@ -21,21 +21,21 @@ public class AccountController
     [Route(template:"{id}")]
     public async Task<AccountGetDto> GetAccountById([FromRoute] int id)
     {
-        var account = await _accountService.GetAccountById(id);
+        var account = await _accountService.GetAccountByIdAsync(id);
         return account;
     }
 
     [HttpGet]
     public async Task<List<AccountGetDto>> GetAllAccounts()
     {
-        var accounts = await _accountService.GetAllAccounts();
+        var accounts = await _accountService.GetAllAccountsAsync();
         return accounts;
     }
 
     [HttpPost]
     public async Task<int> CreateAccount([FromBody] AccountCreateDto accountCreatingDto)
     {
-        var id = await _accountService.CreateAccount(accountCreatingDto);
+        var id = await _accountService.CreateAccountAsync(accountCreatingDto);
         return id;
     }
 
@@ -43,13 +43,13 @@ public class AccountController
     [Route(template: "{id}")]
     public async Task DeleteAccountById([FromRoute] int id)
     {
-        await _accountService.DeleteAccountById(id);
+        await _accountService.DeleteAccountByIdAsync(id);
     }
 
     [HttpPatch]
     [Route(template: "{id}")]
     public async Task UpdateAccount([FromRoute] int id, [FromBody] AccountUpdateDto accountUpdateDto)
     {
-        await _accountService.UpdateAccount(id, accountUpdateDto);
+        await _accountService.UpdateAccountAsync(id, accountUpdateDto);
     }
 }

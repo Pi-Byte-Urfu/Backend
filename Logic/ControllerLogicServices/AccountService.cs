@@ -13,19 +13,19 @@ public class AccountService
         _accountRepo = accountRepo;
     }
 
-    public async Task<AccountGetDto> GetAccountById(int id)
+    public async Task<AccountGetDto> GetAccountByIdAsync(int id)
     {
         var account = await _accountRepo.GetEntityByIdAsync(id);
         return MapEntityToGetDto(account);
     }
 
-    public async Task<List<AccountGetDto>> GetAllAccounts()
+    public async Task<List<AccountGetDto>> GetAllAccountsAsync()
     {
         var accounts = await _accountRepo.GetAllEntitiesAsync();
         return accounts.Select(account => MapEntityToGetDto(account)).ToList();
     }
 
-    public async Task<int> CreateAccount(AccountCreateDto accountCreatingDto)
+    public async Task<int> CreateAccountAsync(AccountCreateDto accountCreatingDto)
     {
         var newAccount = new AccountModel() { 
             Name = accountCreatingDto.Name,
@@ -38,12 +38,12 @@ public class AccountService
         return id;
     }
 
-    public async Task DeleteAccountById(int id)
+    public async Task DeleteAccountByIdAsync(int id)
     {
         await _accountRepo.DeleteEntityByIdAsync(id);
     }
 
-    public async Task UpdateAccount(int id, AccountUpdateDto accountUpdateDto)
+    public async Task UpdateAccountAsync(int id, AccountUpdateDto accountUpdateDto)
     {
         await _accountRepo.UpdateEntityAsync(id, accountUpdateDto);
     }

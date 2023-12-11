@@ -1,4 +1,6 @@
-﻿using Backend.Logic.ControllerLogicServices;
+﻿using Backend.Dal.Models;
+using Backend.DataTransferObjects;
+using Backend.Logic.ControllerLogicServices;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -14,29 +16,44 @@ public class GroupController
         _groupService = groupService;
     }
 
-    //[HttpPost]
-    //[Route("connect/{guid}")]
-    //public async Task<IActionResult> ConnectToGroup([FromRoute] string guid, [FromBody] ConnectToGroupDto connectToGroupDto)
-    //{
-    //    var group = await _repo.GetGroupByGuidAsync(guid);
+    [HttpPost]
+    [Route("connect")]
+    public async Task<IResult> ConnectToGroup([FromBody] GroupConnectDto connectToGroupDto)
+    {
+        await _groupService.ConnectToGroupAsync(connectToGroupDto);
+        return Results.Ok();
+    }
 
-    //    AddStudentToGroup(group, connectToGroupDto.StudentId);
-    //    return Ok();
-    //}
+    [HttpGet]
+    [Route("{id}")]
+    public async Task<GroupGetDto> GetGroupByIdAsync([FromRoute] int id)
+    {
+        return await _groupService.GetGroupByIdAsync(id);
+    }
 
-    //public override Task<IActionResult> Create<AccountCreatingDto>([FromBody] AccountCreatingDto entity)
-    //{
-    //    var newAccount = new AccountModel() { Name = entity.Name,
-    //        Surname = entity.Surname,
-    //        UserId = entity.UserId,
-    //    };
-    //}
+    [HttpGet]
+    public async Task<List<GroupGetDto>> GetAllGroups()
+    {
+        return await _groupService.GetAllGroupsAsync();
+    }
 
-    //[NonAction]
-    //private void AddStudentToGroup(GroupModel groupModel, int studentId)
-    //{
-    //    var studentsIdsList = groupModel.StudentIds.Split(',').ToList();
-    //    studentsIdsList.Append(studentId.ToString());
-    //    groupModel.StudentIds = string.Join(",", studentsIdsList);
-    //}
+    [HttpPost]
+    public async Task<int> CreateGroup([FromBody] GroupCreateDto createGroupDto)
+    {
+        return await _groupService.CreateGroupAsync(createGroupDto);
+    }
+
+    [HttpDelete]
+    [Route("{id}")]
+    public async Task DeleteGroupById([FromRoute] int id)
+    {
+        await _groupService.DeleteGroupByIdAsync(id);
+    }
+
+    [HttpPatch]
+    [Route("{id}")]
+    public async Task UpdateGroup([FromRoute] int id, [FromBody] GroupUpdateDto updateGroupDto)
+    {
+        await _groupService.UpdateGroupAsync(id, updateGroupDto);
+    }
 }

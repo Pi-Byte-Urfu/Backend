@@ -13,28 +13,58 @@ public class GroupService
         _groupRepo = groupRepo;
     }
 
-    public GroupModel GetGroupById(int id)
+    public async Task<GroupGetDto> GetGroupByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        var group = await _groupRepo.GetEntityByIdAsync(id);
+        return MapGroupToGetDto(group);
     }
 
-    public GroupModel GetAllGroups()
+    public async Task<List<GroupGetDto>> GetAllGroupsAsync()
     {
-        throw new NotImplementedException();
+        var groups = await _groupRepo.GetAllEntitiesAsync();
+        return groups.Select(MapGroupToGetDto).ToList();
     }
 
-    public GroupModel CreateGroup(GroupCreateDto createGroupDto)
+    public async Task<int> CreateGroupAsync(GroupCreateDto createGroupDto)
     {
-        throw new NotImplementedException();
+        var newGroup = new GroupModel()
+        {
+            GroupName = createGroupDto.GroupName,
+            AddGuid = Guid.NewGuid().ToString(),
+            StudentIds = "",
+            TeacherId = createGroupDto.TeacherId,
+        };
+
+        var id = await _groupRepo.CreateEntityAsync(newGroup);
+        return id;
     }
 
-    public GroupModel DeleteGroupById(int id)
+    public async Task DeleteGroupByIdAsync(int id)
     {
-        throw new NotImplementedException();
+        await _groupRepo.DeleteEntityByIdAsync(id);
     }
 
-    public GroupModel UpdateGroup(GroupUpdateDto updateGroupDto)
+    public async Task UpdateGroupAsync(int id, GroupUpdateDto updateGroupDto)
     {
-        throw new NotImplementedException();
+        await _groupRepo.UpdateEntityAsync(id, updateGroupDto);
+    }
+
+    public async Task ConnectToGroupAsync(GroupConnectDto connectToGroupDto)
+    {
+        // TODO: Add check if studen already in group
+        await _groupRepo.AddStudentToGroupAsync(connectToGroupDto.StudentId, connectToGroupDto.Guid);
+    }
+
+    // TODO: Make deleting student from gorup
+    // TODO: Make regenerating GUID (link)
+
+    private GroupGetDto MapGroupToGetDto(GroupModel group)
+    {
+        return new GroupGetDto()
+        {
+            GroupName = group.GroupName,
+            TeacherId = group.TeacherId,
+            StudentIds = group.StudentIds.Split(',').Select(id => int.Parse(id)).ToArray(),
+        };
     }
 }

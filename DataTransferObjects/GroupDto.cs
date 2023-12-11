@@ -2,15 +2,23 @@
 
 namespace Backend.DataTransferObjects;
 
+public class GroupGetDto : Dto
+{
+    public string GroupName { get; set; }
+    public int TeacherId { get; set; }
+    public int[] StudentIds { get; set; }
+}
+
 public class GroupCreateDto : Dto
 {
-    public string GroupName { get; init; }
-    public int TeacherId { get; init; }
+    public string GroupName { get; set; }
+    public int TeacherId { get; set; }
 }
 
 public class GroupConnectDto : Dto
 {
-    public int StudentId { get; init; }
+    public int StudentId { get; set; }
+    public string Guid { get; set; }
 }
 
 public class GroupUpdateDto : UpdateDto<GroupModel>
