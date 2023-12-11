@@ -1,5 +1,11 @@
 ﻿namespace Backend.DataTransferObjects;
 
-public class Dto
+public abstract class Dto
 {
+
+}
+
+public abstract class UpdateDto<TModel> : Dto
+{
+    public abstract TModel UpdateEntity(TModel entityToUpdate);
 }

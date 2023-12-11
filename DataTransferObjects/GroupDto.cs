@@ -1,12 +1,27 @@
-﻿namespace Backend.DataTransferObjects;
+﻿using Backend.Dal.Models;
 
-public class CreateGroupDto : Dto
+namespace Backend.DataTransferObjects;
+
+public class GroupCreateDto : Dto
 {
     public string GroupName { get; init; }
     public int TeacherId { get; init; }
 }
 
-public class ConnectToGroupDto : Dto
+public class GroupConnectDto : Dto
 {
     public int StudentId { get; init; }
+}
+
+public class GroupUpdateDto : UpdateDto<GroupModel>
+{
+    public string GroupName { get; set; }
+
+    public override GroupModel UpdateEntity(GroupModel entityToUpdate)
+    {
+        if (GroupName is not null)
+            entityToUpdate.GroupName = entityToUpdate.GroupName;
+
+        return entityToUpdate;
+    }
 }
