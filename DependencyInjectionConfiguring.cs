@@ -1,4 +1,5 @@
-﻿using Backend.Repositories;
+﻿using Backend.Logic.ControllerLogicServices;
+using Backend.Repositories;
 using Backend.Repositories.Interfaces;
 using Backend.Services;
 using Backend.Services.Interfaces;
@@ -48,7 +49,10 @@ public class DependencyInjectionConfiguring
 
     private void RegisterBusinessServices()
     {
-        _services.AddScoped<IUserService, UserService>();
+        _services.AddScoped<UserService>();
+        _services.AddScoped<AccountService>();
+        _services.AddScoped<GroupService>();
+
         _services.AddScoped<IPasswordHelperService, PasswordHelperService>();
         _services.AddScoped<IEncryptionService, EncryptionService>();
     }
