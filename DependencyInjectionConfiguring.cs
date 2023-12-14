@@ -1,10 +1,10 @@
-﻿using Backend.Dal.Auth;
-using Backend.Dal.Auth.Interfaces;
-using Backend.Dal.Courses;
-using Backend.Dal.Courses.Interfaces;
-using Backend.Logic.Auth;
-using Backend.Logic.Auth.Interfaces;
-using Backend.Logic.Courses;
+﻿using Backend.Auth.Dal;
+using Backend.Auth.Dal.Interfaces;
+using Backend.Auth.Logic;
+using Backend.Auth.Logic.Interfaces;
+using Backend.Courses.Dal;
+using Backend.Courses.Dal.Interfaces;
+using Backend.Courses.Logic;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend;

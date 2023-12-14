@@ -1,5 +1,5 @@
-﻿using Backend.Dal.Auth.Models;
-using Backend.Dal.Courses.Models;
+﻿using Backend.Auth.Dal.Models;
+using Backend.Courses.Dal.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend;
