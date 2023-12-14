@@ -1,9 +1,10 @@
-﻿using Backend.Logic.ControllerLogicServices;
-using Backend.Repositories;
-using Backend.Repositories.Interfaces;
-using Backend.Services;
-using Backend.Services.Interfaces;
-
+﻿using Backend.Dal.Auth;
+using Backend.Dal.Auth.Interfaces;
+using Backend.Dal.Courses;
+using Backend.Dal.Courses.Interfaces;
+using Backend.Logic.Auth;
+using Backend.Logic.Auth.Interfaces;
+using Backend.Logic.Courses;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend;
