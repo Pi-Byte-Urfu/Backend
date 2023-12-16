@@ -1,4 +1,5 @@
-﻿using Backend.Courses.Logic;
+﻿using Backend.Base.Dto;
+using Backend.Courses.Logic;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Courses.Api;
@@ -15,5 +16,16 @@ public class CourseController
         _courseService = courseService;
     }
 
+    [HttpGet]
+    public async Task<CourseGetAllDto> GetAllCourses()
+    {
+        throw new NotImplementedException();
+    }
 
+    [HttpGet]
+    [Route("{id}")]
+    public async Task<CourseGetOneDto> GetOneCourse([FromRoute] int id)
+    {
+        throw new NotImplementedException();
+    }
 }
