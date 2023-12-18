@@ -1,8 +1,6 @@
-using System.Net;
 using Backend;
 
 using Microsoft.AspNetCore.Diagnostics;
-using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 

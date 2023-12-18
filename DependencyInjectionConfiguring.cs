@@ -1,9 +1,10 @@
-﻿using Backend.Logic.ControllerLogicServices;
-using Backend.Repositories;
-using Backend.Repositories.Interfaces;
-using Backend.Services;
-using Backend.Services.Interfaces;
-
+﻿using Backend.Auth.Dal;
+using Backend.Auth.Dal.Interfaces;
+using Backend.Auth.Logic;
+using Backend.Auth.Logic.Interfaces;
+using Backend.Courses.Dal;
+using Backend.Courses.Dal.Interfaces;
+using Backend.Courses.Logic;
 using Microsoft.EntityFrameworkCore;
 
 namespace Backend;
@@ -39,21 +40,47 @@ public class DependencyInjectionConfiguring
 
     private void RegisterDatabaseRepositories()
     {
+        RegisterAuthDbRepos();
+        RegisterCoursesDbRepos();
+    }
+
+    private void RegisterAuthDbRepos()
+    {
         _services.AddScoped<IAccountRepo, AccountRepo>();
-        _services.AddScoped<IGroupRepo, GroupRepo>();
         _services.AddScoped<IUserRepo, UserRepo>();
         _services.AddScoped<IStudentRepo, StudentRepo>();
         _services.AddScoped<ITeacherRepo, TeacherRepo>();
         _services.AddScoped<IPasswordRepo, PasswordRepo>();
     }
 
+    private void RegisterCoursesDbRepos()
+    {
+        _services.AddScoped<IGroupRepo, GroupRepo>();
+        _services.AddScoped<ICourseChaptersRepo, CourseChaptersRepo>();
+        _services.AddScoped<ICourseRepo, CourseRepo>();
+        _services.AddScoped<IGroupCoursesRepo, GroupCoursesRepo>();
+        _services.AddScoped<IGroupRepo, GroupRepo>();
+        _services.AddScoped<IStudentGroupsRepo, StudentGroupsRepo>();
+    }
+
     private void RegisterBusinessServices()
+    {
+        RegisterAuthLogic();
+        RegisterCoursesLogic();
+    }
+
+    private void RegisterAuthLogic()
     {
         _services.AddScoped<UserService>();
         _services.AddScoped<AccountService>();
-        _services.AddScoped<GroupService>();
-
+        
         _services.AddScoped<IPasswordHelperService, PasswordHelperService>();
         _services.AddScoped<IEncryptionService, EncryptionService>();
+    }
+
+    private void RegisterCoursesLogic()
+    {
+        _services.AddScoped<GroupService>();
+        _services.AddScoped<CourseService>();
     }
 }
