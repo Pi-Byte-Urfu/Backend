@@ -1,7 +1,8 @@
 ﻿using Backend.Courses.Dto;
 using Backend.Courses.Logic;
-using Backend.Courses.Dal.Models;
 using Microsoft.AspNetCore.Mvc;
+
+namespace Backend.Courses.Api;
 
 
 [ApiController]

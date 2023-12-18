@@ -1,6 +1,7 @@
-﻿using Backend.Courses.Dal.Models;
+﻿using Backend.Base.Dto;
+using Backend.Courses.Dal.Models;
 
-namespace Backend.Base.Dto;
+namespace Backend.Courses.Dto;
 
 public class CourseGetOneDto : BaseDto
 {
@@ -34,13 +35,23 @@ public class CourseGetAllDto : BaseDto
 
 public class CourseCreateDto : BaseDto
 {
-
+    public required string Name { get; set; }
+    public string? Description { get; set; }
+    public int CreatorId { get; set; }
 }
 
 public class CourseUpdateDto : BaseUpdateDto<CourseModel>
 {
+    public string? Name { get; set; }
+    public string? Description { get; set; }
+
     public override CourseModel UpdateEntity(CourseModel entityToUpdate)
     {
-        throw new NotImplementedException();
+        if (Name is not null)
+            entityToUpdate.Name = Name;
+        if (Description is not null)
+            entityToUpdate.Description = Description;
+
+        return entityToUpdate;
     }
 }

@@ -31,7 +31,6 @@ public class GroupService
         {
             GroupName = createGroupDto.GroupName,
             AddGuid = Guid.NewGuid().ToString(),
-            StudentIds = "",
             TeacherId = createGroupDto.TeacherId,
         };
 
@@ -52,7 +51,7 @@ public class GroupService
     public async Task ConnectToGroupAsync(GroupConnectDto connectToGroupDto)
     {
         // TODO: Add check if studen already in group
-        await _groupRepo.AddStudentToGroupAsync(connectToGroupDto.StudentId, connectToGroupDto.Guid);
+        // TODO: Add connecting with new system
     }
 
     // TODO: Make deleting student from gorup
@@ -64,7 +63,6 @@ public class GroupService
         {
             GroupName = group.GroupName,
             TeacherId = group.TeacherId,
-            StudentIds = group.StudentIds.Split(',').Select(id => int.Parse(id)).ToArray(),
         };
     }
 }

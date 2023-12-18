@@ -8,12 +8,19 @@ public class AppDatabase : DbContext
 {
     private IConfiguration _config { get; init; }
 
+    // Auth
     public DbSet<UserModel> Users { get; set; }
     public DbSet<PasswordModel> Passwords { get; set; }
     public DbSet<AccountModel> Accounts { get; set; }
     public DbSet<TeacherModel> Teachers { get; set; }
     public DbSet<StudentModel> Students { get; set; }
+
+    // Courses
     public DbSet<GroupModel> Groups { get; set; }
+    public DbSet<CourseChaptersModel> CourseChaptersModels { get; set; }
+    public DbSet<CourseModel> Courses { get; set; }
+    public DbSet<GroupCoursesModel> GroupCourses { get; set; }
+    public DbSet<StudentGroupsModel> StudentGroups { get; set; }
 
     public AppDatabase(DbContextOptions<AppDatabase> options, IConfiguration config) : base(options)
     {

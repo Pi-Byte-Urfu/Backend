@@ -7,7 +7,6 @@ public class GroupGetDto : BaseDto
 {
     public string GroupName { get; set; }
     public int TeacherId { get; set; }
-    public int[] StudentIds { get; set; }
 }
 
 public class GroupCreateDto : BaseDto

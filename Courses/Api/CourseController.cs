@@ -1,4 +1,4 @@
-﻿using Backend.Base.Dto;
+﻿using Backend.Courses.Dto;
 using Backend.Courses.Logic;
 using Microsoft.AspNetCore.Mvc;
 
@@ -17,15 +17,35 @@ public class CourseController
     }
 
     [HttpGet]
-    public async Task<CourseGetAllDto> GetAllCourses()
+    [Route("{id}")]
+    public async Task<CourseGetOneDto> GetCourseByIdAsync([FromRoute] int id)
     {
-        throw new NotImplementedException();
+        return await _courseService.GetCourseByIdAsync(id);
     }
 
     [HttpGet]
-    [Route("{id}")]
-    public async Task<CourseGetOneDto> GetOneCourse([FromRoute] int id)
+    public async Task<CourseGetAllDto> GetAllCourses()
     {
-        throw new NotImplementedException();
+        return await _courseService.GetAllCoursesAsync();
+    }
+
+    [HttpPost]
+    public async Task<int> CreateCourse([FromBody] CourseCreateDto createCourseDto)
+    {
+        return await _courseService.CreateCourseAsync(createCourseDto);
+    }
+
+    [HttpDelete]
+    [Route("{id}")]
+    public async Task DeleteCourseById([FromRoute] int id)
+    {
+        await _courseService.DeleteCourseByIdAsync(id);
+    }
+
+    [HttpPatch]
+    [Route("{id}")]
+    public async Task UpdateCourse([FromRoute] int id, [FromBody] CourseUpdateDto updateCourseDto)
+    {
+        await _courseService.UpdateCourseAsync(id, updateCourseDto);
     }
 }
