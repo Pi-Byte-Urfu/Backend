@@ -6,16 +6,29 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy("AllowSpecificOrigin",
+//        builder =>
+//        {
+//            builder.WithOrigins(
+//                    "http://127.0.0.1:5500",
+//                    "http://localhost:3000",
+//                    "http://5.23.54.98:80",
+//                    "http://5.23.54.98:3000")
+//                .AllowAnyMethod()
+//                .AllowAnyHeader();
+//        });
+//});
+
 builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll",
         builder =>
         {
-            builder
-            .AllowAnyOrigin()
-            .AllowAnyMethod()
-            .AllowAnyHeader()
-            .AllowCredentials();
+            builder.AllowAnyOrigin()
+                .AllowAnyMethod()
+                .AllowAnyHeader();
         });
 });
 
@@ -27,6 +40,9 @@ builder.Configuration.AddJsonFile("./database_settings.json");
 
 
 var app = builder.Build();
+
+//app.UseCors("AllowSpecificOrigin");
+app.UseCors("AllowAll");
 
 app.UseExceptionHandler(options =>
     {
