@@ -51,4 +51,20 @@ public class AccountController
     {
         await _accountService.UpdateAccountAsync(id, accountUpdateDto);
     }
+
+    [HttpPost]
+    [Route(template: "{id}/photo")]
+    public async Task<IResult> UploadPhoto([FromRoute] int id, [FromForm] AccountUploadPhotoDto accountUploadPhotoDto)
+    {
+        await _accountService.SavePhotoOnServer(id, accountUploadPhotoDto);
+        return Results.Ok();
+    }
+
+    [HttpGet]
+    [Route(template: "{id}/photo")]
+    public async Task<IResult> GetPhoto([FromRoute] int id)
+    {
+        var photoBytes = await _accountService.GetPhotoFromServer(id);
+        return Results.File(fileContents: photoBytes, contentType: "image/png");
+    }
 }

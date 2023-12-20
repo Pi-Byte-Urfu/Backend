@@ -25,16 +25,7 @@ public class AppDatabase : DbContext
     public AppDatabase(DbContextOptions<AppDatabase> options, IConfiguration config) : base(options)
     {
         _config = config;
-        //Database.EnsureDeleted();
         Database.EnsureCreated();
-        try
-        {
-            Database.Migrate();
-        }
-        catch (Exception ex)
-        {
-            Console.WriteLine($"Can't migrate for this reason:\n{ex.Message}");
-        }
     }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
