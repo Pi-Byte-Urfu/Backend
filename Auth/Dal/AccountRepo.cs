@@ -20,4 +20,11 @@ public class AccountRepo : BaseRepo<AccountModel>, IAccountRepo
 
         return await base.CreateEntityAsync(entity);
     }
+
+    public async Task UpdatePhotoPath(int accountId, string photoPath)
+    {
+        var account = await GetEntityByIdAsync(accountId);
+        account.PhotoUrl = photoPath;
+        await _database.SaveChangesAsync();
+    }
 }
