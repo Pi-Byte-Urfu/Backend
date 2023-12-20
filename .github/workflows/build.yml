@@ -18,8 +18,7 @@ jobs:
 
       - name: Deploy with SSH
         run: |
-          ssh root@5.23.54.98> << EOF
+          ssh root@5.23.54.98
             cd /opt/app-backend/Backend
             docker compose up -d --build
             docker image prune
-          EOF
