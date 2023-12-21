@@ -15,10 +15,18 @@ jobs:
         with:
           ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
           ssh-known-hosts: ${{ secrets.SSH_KNOWN_HOSTS }}
+      
+      - name: Connect to Server
+        run: ssh github_server@5.23.54.98
+      
+      - name: Change Directory to Project Directory
+        run: cd /opt/app-backend/Backend
+          
+      - name: Pull Changes
+        run: git pull origin master
 
-      - name: Deploy with SSH
-        run: |
-          ssh root@5.23.54.98
-            cd /opt/app-backend/Backend
-            docker compose up -d --build
-            docker image prune
+      - name: Start Docker Compose
+        run: docker-compose up -d --build
+
+      - name: Clean Up Unused Images
+        run: docker image prune
