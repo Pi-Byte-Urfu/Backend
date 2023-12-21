@@ -9,7 +9,7 @@ namespace Backend.Base.Dal;
 public abstract class BaseRepo<T> : IBaseRepo<T>
     where T : BaseModel
 {
-    private readonly AppDatabase _database;
+    protected readonly AppDatabase _database;
     protected DbSet<T> table;
 
     public BaseRepo(AppDatabase database)

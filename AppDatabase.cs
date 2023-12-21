@@ -25,7 +25,6 @@ public class AppDatabase : DbContext
     public AppDatabase(DbContextOptions<AppDatabase> options, IConfiguration config) : base(options)
     {
         _config = config;
-        //Database.EnsureDeleted();
         Database.EnsureCreated();
     }
 

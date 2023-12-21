@@ -5,6 +5,7 @@ namespace Backend.Auth.Dto;
 
 public class AccountGetDto : BaseDto
 {
+    public int Id { get; set; }
     public string Name { get; set; }
     public string Surname { get; set; }
     public string PhotoUrl { get; set; }
@@ -31,4 +32,9 @@ public class AccountUpdateDto : BaseUpdateDto<AccountModel>
 
         return entityToUpdate;
     }
+}
+
+public class AccountUploadPhotoDto : BaseDto
+{
+    public IFormFile Photo { get; set;  }
 }
