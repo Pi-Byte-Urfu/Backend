@@ -5,5 +5,6 @@ namespace Backend.Auth.Dal.Interfaces;
 
 public interface IAccountRepo : IBaseRepo<AccountModel>
 {
-    public Task UpdatePhotoPath(int accountId, string photoPath);
+    public Task UpdatePhotoPathAsync(int accountId, string photoPath);
+    public Task<AccountModel> GetAccountByUserIdAsync(int userId);
 }

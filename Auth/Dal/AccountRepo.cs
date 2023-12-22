@@ -2,6 +2,8 @@
 using Backend.Auth.Dal.Models;
 using Backend.Base.Dal;
 
+using Microsoft.EntityFrameworkCore;
+
 namespace Backend.Auth.Dal;
 
 public class AccountRepo : BaseRepo<AccountModel>, IAccountRepo
@@ -21,7 +23,12 @@ public class AccountRepo : BaseRepo<AccountModel>, IAccountRepo
         return await base.CreateEntityAsync(entity);
     }
 
-    public async Task UpdatePhotoPath(int accountId, string photoPath)
+    public async Task<AccountModel> GetAccountByUserIdAsync(int userId)
+    {
+        return await table.Where(account => account.UserId == userId).FirstOrDefaultAsync();
+    }
+
+    public async Task UpdatePhotoPathAsync(int accountId, string photoPath)
     {
         var account = await GetEntityByIdAsync(accountId);
         account.PhotoUrl = photoPath;

@@ -12,13 +12,20 @@ public class UserService
     private IPasswordHelperService _passwordHelper;
     private IStudentRepo _studentRepo;
     private ITeacherRepo _teacherRepo;
+    private IAccountRepo _accountRepo;
 
-    public UserService(IUserRepo userRepo, IPasswordHelperService passwordHelper, IStudentRepo studentRepo, ITeacherRepo teacherRepo)
+    public UserService(
+        IUserRepo userRepo,
+        IPasswordHelperService passwordHelper,
+        IStudentRepo studentRepo,
+        ITeacherRepo teacherRepo,
+        IAccountRepo accountRepo)
     {
         _passwordHelper = passwordHelper;
         _userRepo = userRepo;
         _studentRepo = studentRepo;
         _teacherRepo = teacherRepo;
+        _accountRepo = accountRepo;
     }
 
     public async Task<UserAuthResponseDto> Login(UserLoginDto userLoginInfo)
@@ -47,7 +54,20 @@ public class UserService
         await AddToNeeededUserTypeEntityAsync(newUser);
         await _passwordHelper.AddHashedPasswordToDatabaseAsync(user.Password);
 
+        await CreateEmptyAccountAsync(id);
+
         return new UserAuthResponseDto() { Id = id, UserType = newUser.UserType };
+    }
+
+    public async Task CreateEmptyAccountAsync(int userId)
+    {
+        var emptyAccount = new AccountModel() { 
+            Name = string.Empty,
+            PhotoUrl = $"{AppDomain.CurrentDomain.BaseDirectory}/static_files/photos/standard.jpg",
+            Surname = string.Empty,
+            UserId = userId };
+
+        await _accountRepo.CreateEntityAsync(emptyAccount);
     }
 
     public async Task AddToNeeededUserTypeEntityAsync(UserModel user)
