@@ -26,6 +26,7 @@ public class DependencyInjectionConfiguring
 
     private void RegisterAspServices()
     {
+        _services.AddHttpContextAccessor();
         _services.AddControllers();
         _services.AddEndpointsApiExplorer();
         _services.AddSwaggerGen();

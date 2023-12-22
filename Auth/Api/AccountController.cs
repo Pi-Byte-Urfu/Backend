@@ -31,13 +31,6 @@ public class AccountController
         return accounts;
     }
 
-    [HttpPost]
-    public async Task<int> CreateAccount([FromBody] AccountCreateDto accountCreatingDto)
-    {
-        var id = await _accountService.CreateAccountAsync(accountCreatingDto);
-        return id;
-    }
-
     [HttpDelete]
     [Route(template: "{id}")]
     public async Task DeleteAccountById([FromRoute] int id)
@@ -56,7 +49,7 @@ public class AccountController
     [Route(template: "{id}/photo")]
     public async Task<IResult> UploadPhoto([FromRoute] int id, [FromForm] AccountUploadPhotoDto accountUploadPhotoDto)
     {
-        await _accountService.SavePhotoOnServer(id, accountUploadPhotoDto);
+        await _accountService.SavePhotoOnServerAsync(id, accountUploadPhotoDto);
         return Results.Ok();
     }
 
@@ -64,7 +57,14 @@ public class AccountController
     [Route(template: "{id}/photo")]
     public async Task<IResult> GetPhoto([FromRoute] int id)
     {
-        var photoBytes = await _accountService.GetPhotoFromServer(id);
+        var photoBytes = await _accountService.GetPhotoFromServerAsync(id);
         return Results.File(fileContents: photoBytes, contentType: "image/png");
+    }
+
+    [HttpGet]
+    [Route(template: "user/{id}")]
+    public async Task<AccountGetDto> GetAccountByUserIdAsync([FromRoute] int id)
+    {
+        return await _accountService.GetAccountByIdAsync(id);
     }
 }
