@@ -20,8 +20,8 @@ public class AccountCreateDto : BaseDto
 
 public class AccountUpdateDto : BaseUpdateDto<AccountModel>
 {
-    public string Name { get; set; }
-    public string Surname { get; set; }
+    public string? Name { get; set; }
+    public string? Surname { get; set; }
 
     public override AccountModel UpdateEntity(AccountModel entityToUpdate)
     {
