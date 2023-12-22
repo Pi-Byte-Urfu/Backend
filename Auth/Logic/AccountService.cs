@@ -32,9 +32,9 @@ public class AccountService
         await _accountRepo.DeleteEntityByIdAsync(id);
     }
 
-    public async Task UpdateAccountAsync(int id, AccountUpdateDto accountUpdateDto)
+    public async Task UpdateAccountByUserIdAsync(int userId, AccountUpdateDto accountUpdateDto)
     {
-        await _accountRepo.UpdateEntityAsync(id, accountUpdateDto);
+        await _accountRepo.UpdateAccountByUserIdAsync(userId, accountUpdateDto);
     }
 
     private AccountGetDto MapEntityToGetDto(AccountModel account)

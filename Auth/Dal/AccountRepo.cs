@@ -1,5 +1,6 @@
 ﻿using Backend.Auth.Dal.Interfaces;
 using Backend.Auth.Dal.Models;
+using Backend.Auth.Dto;
 using Backend.Base.Dal;
 
 using Microsoft.EntityFrameworkCore;
@@ -26,6 +27,15 @@ public class AccountRepo : BaseRepo<AccountModel>, IAccountRepo
     public async Task<AccountModel> GetAccountByUserIdAsync(int userId)
     {
         return await table.Where(account => account.UserId == userId).FirstOrDefaultAsync();
+    }
+
+    public async Task<int> UpdateAccountByUserIdAsync(int userId, AccountUpdateDto accountUpdateDto)
+    {
+        var account = await table.Where(account => account.UserId == userId).FirstOrDefaultAsync();
+        accountUpdateDto.UpdateEntity(account);
+
+        await _database.SaveChangesAsync();
+        return account.Id;
     }
 
     public async Task UpdatePhotoPathAsync(int accountId, string photoPath)

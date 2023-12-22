@@ -39,10 +39,10 @@ public class AccountController
     }
 
     [HttpPatch]
-    [Route(template: "{id}")]
-    public async Task UpdateAccount([FromRoute] int id, [FromBody] AccountUpdateDto accountUpdateDto)
+    [Route(template: "user/{id}")]
+    public async Task UpdateAccountByUserIdAsync([FromRoute] int id, [FromBody] AccountUpdateDto accountUpdateDto)
     {
-        await _accountService.UpdateAccountAsync(id, accountUpdateDto);
+        await _accountService.UpdateAccountByUserIdAsync(id, accountUpdateDto);
     }
 
     [HttpPost]
