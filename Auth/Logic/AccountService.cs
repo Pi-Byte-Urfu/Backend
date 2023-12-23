@@ -1,6 +1,7 @@
 ﻿using Backend.Auth.Dal.Interfaces;
 using Backend.Auth.Dal.Models;
 using Backend.Auth.Dto;
+using Backend.Base.Services.Interfaces;
 
 namespace Backend.Auth.Logic;
 
@@ -8,10 +9,12 @@ public class AccountService
 {
     private IAccountRepo _accountRepo;
     private IHttpContextAccessor _httpContextAccessor;
+    private IFileManager _fileManager;
 
-    public AccountService(IAccountRepo accountRepo, IHttpContextAccessor httpContextAccessor)
+    public AccountService(IAccountRepo accountRepo, IFileManager fileManager, IHttpContextAccessor httpContextAccessor)
     {
         _accountRepo = accountRepo;
+        _fileManager = fileManager;
         _httpContextAccessor = httpContextAccessor;
     }
 
@@ -53,15 +56,7 @@ public class AccountService
     public async Task SavePhotoOnServerAsync(int accountId, AccountUploadPhotoDto accountUploadPhotoDto)
     {
         var file = accountUploadPhotoDto.Photo;
-        var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
-        CreateDirectoryIfNotExists(baseDirectory, "static_files/photos");
-        var photosDirectory = $"{baseDirectory}/static_files/photos";
-        var guid = GetRandomGuid();
-
-        var filePath = GeneratePath(photosDirectory, guid);
-
-        using var fileStream = new FileStream(path: filePath, mode: FileMode.CreateNew);
-        await file.CopyToAsync(fileStream);
+        var filePath = await _fileManager.UploadFileAsync(file: file, fileType: Base.Enums.FileType.Photo);
 
         await _accountRepo.UpdatePhotoPathAsync(accountId, filePath);
     }
@@ -71,36 +66,12 @@ public class AccountService
         var account = await _accountRepo.GetEntityByIdAsync(accountId);
         var pathToFile = account.PhotoUrl;
 
-        using var fileStream = new FileStream(path: pathToFile, mode: FileMode.Open);
-        var bytesAmount = fileStream.Length;
-        var photoBytes = new byte[bytesAmount];
-        await fileStream.ReadAsync(photoBytes);
-
-        return photoBytes;
+        return await _fileManager.GetFileBytesAsync(path: pathToFile, fileType: Base.Enums.FileType.Photo);
     }
 
     public async Task<AccountGetDto> GetAccountByUserIdAsync(int userId)
     {
         var account = await _accountRepo.GetAccountByUserIdAsync(userId);
         return MapEntityToGetDto(account);
-    } 
-
-    private string GeneratePath(string directory, string name)
-    {
-        return Path.Combine(directory, name);
-    }
-
-    private string GetRandomGuid()
-    {
-        return Guid.NewGuid().ToString("N");
-    }
-
-    private void CreateDirectoryIfNotExists(string path, string directoryName)
-    {
-        foreach (var directory in Directory.GetDirectories(path))
-            if (directory == directoryName)
-                return;
-
-        Directory.CreateDirectory($"{path}/{directoryName}");
     }
 }
