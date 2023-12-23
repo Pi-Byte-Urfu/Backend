@@ -3,6 +3,7 @@ using Backend.Auth.Dal.Models;
 using Backend.Auth.Dto;
 using Backend.Auth.Enums;
 using Backend.Auth.Logic.Interfaces;
+using Backend.Base.Services;
 
 namespace Backend.Auth.Logic;
 
@@ -64,7 +65,7 @@ public class UserService
     {
         var emptyAccount = new AccountModel() { 
             Name = string.Empty,
-            PhotoUrl = $"{AppDomain.CurrentDomain.BaseDirectory}/static_files/photos/standard.jpg",
+            PhotoUrl = StaticFilesManager.StandardPhotoPath,
             Surname = string.Empty,
             UserId = userId };
 

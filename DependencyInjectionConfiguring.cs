@@ -2,6 +2,8 @@
 using Backend.Auth.Dal.Interfaces;
 using Backend.Auth.Logic;
 using Backend.Auth.Logic.Interfaces;
+using Backend.Base.Services;
+using Backend.Base.Services.Interfaces;
 using Backend.Courses.Dal;
 using Backend.Courses.Dal.Interfaces;
 using Backend.Courses.Logic;
@@ -66,6 +68,7 @@ public class DependencyInjectionConfiguring
 
     private void RegisterBusinessServices()
     {
+        RegisterHelperServices();
         RegisterAuthLogic();
         RegisterCoursesLogic();
     }
@@ -74,14 +77,19 @@ public class DependencyInjectionConfiguring
     {
         _services.AddScoped<UserService>();
         _services.AddScoped<AccountService>();
-        
-        _services.AddScoped<IPasswordHelperService, PasswordHelperService>();
-        _services.AddScoped<IEncryptionService, EncryptionService>();
     }
 
     private void RegisterCoursesLogic()
     {
         _services.AddScoped<GroupService>();
         _services.AddScoped<CourseService>();
+    }
+
+    private void RegisterHelperServices()
+    {
+        _services.AddScoped<IPasswordHelperService, PasswordHelperService>();
+        _services.AddScoped<IEncryptionService, EncryptionService>();
+
+        _services.AddScoped<IFileManager, StaticFilesManager>();
     }
 }

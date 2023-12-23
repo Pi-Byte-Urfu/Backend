@@ -47,6 +47,7 @@ public class AccountController
 
     [HttpPost]
     [Route(template: "{id}/photo")]
+    [Consumes("multipart/form-data")]
     public async Task<IResult> UploadPhoto([FromRoute] int id, [FromForm] AccountUploadPhotoDto accountUploadPhotoDto)
     {
         await _accountService.SavePhotoOnServerAsync(id, accountUploadPhotoDto);
