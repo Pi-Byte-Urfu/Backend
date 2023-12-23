@@ -49,9 +49,7 @@ app.UseExceptionHandler(options =>
                 var exceptionObject = context.Features.Get<IExceptionHandlerFeature>();
                 if (exceptionObject != null)
                 {
-                    var errorMessage = $"Exception Error: {exceptionObject.Error.Message}";
-                    if (app.Environment.IsDevelopment())
-                        errorMessage = $"Exception Error: {exceptionObject.Error.Message}\nStackTrace:{exceptionObject.Error.StackTrace}";
+                    var errorMessage = $"{exceptionObject.Error.Message}";
 
                     if (exceptionObject.Error is BadHttpRequestException)
                         context.Response.StatusCode = ((BadHttpRequestException)exceptionObject.Error).StatusCode;

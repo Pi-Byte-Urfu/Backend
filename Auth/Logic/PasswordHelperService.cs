@@ -33,7 +33,7 @@ public class PasswordHelperService : IPasswordHelperService
     {
         var passwordFromDatabaseObject = await _passwordRepo.GetPasswordByHash(GetPasswordHash(userLoginInfo.Password));
         if (passwordFromDatabaseObject is null)
-            throw new BadHttpRequestException("Can't get this password from db - (no idea why btw)", statusCode: 422);
+            return false;
 
         return userLoginInfo.Password == _encryptionService.DecryptString(passwordFromDatabaseObject.CryptedPassword);
     }

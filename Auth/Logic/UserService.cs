@@ -32,19 +32,20 @@ public class UserService
     {
         var user = await _userRepo.GetUserByEmailAsync(userLoginInfo.Email);
         if (user is null)
-            throw new BadHttpRequestException("There are no user with this email", 422);
+            throw new BadHttpRequestException("Неправильный email", 422);
 
         var isCorrectLoginInfo = await _passwordHelper.IsPasswordCorrectAsync(user, userLoginInfo);
         if (isCorrectLoginInfo)
             return new UserAuthResponseDto() { Id = user.Id, UserType = user.UserType };
 
-        throw new BadHttpRequestException("Incorrect password", 400);
+        throw new BadHttpRequestException("Неверный пароль", 400);
     }
 
     public async Task<UserAuthResponseDto> Register(UserRegistrationDto user)
     {
-        if (user.Email == "string")
-            throw new BadHttpRequestException("This email is string - test error", 402); // TestThing
+        var userWithThisEmail = await _userRepo.GetUserByEmailAsync(user.Email);
+        if (userWithThisEmail is not null)
+            throw new BadHttpRequestException("Пользователь с таким email уже существует", 400);
 
         var hashedPassword = _passwordHelper.GetPasswordHash(user.Password);
         var newUser = new UserModel() { Email = user.Email, HashedPassword = hashedPassword, UserType = user.UserType };
