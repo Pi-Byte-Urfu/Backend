@@ -5,8 +5,11 @@ namespace Backend.Auth.Dal.Models;
 
 public class AccountModel : BaseModel
 {
+    public required string Email { get; set; }
+
     public required string Name { get; set; }
     public required string Surname { get; set; }
+    public string? Patronymic { get; set; }
 
     public required string PhotoUrl { get; set; } = $"{AppDomain.CurrentDomain.BaseDirectory}/static_files/photos/standard.jpg";
 

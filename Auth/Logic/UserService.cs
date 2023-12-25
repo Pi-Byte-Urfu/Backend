@@ -56,18 +56,23 @@ public class UserService
         await AddToNeeededUserTypeEntityAsync(newUser);
         await _passwordHelper.AddHashedPasswordToDatabaseAsync(user.Password);
 
-        await CreateEmptyAccountAsync(id);
+        await CreateEmptyAccountAsync(newUser);
 
         return new UserAuthResponseDto() { Id = id, UserType = newUser.UserType };
     }
 
-    public async Task CreateEmptyAccountAsync(int userId)
+    public async Task CreateEmptyAccountAsync(UserModel user)
     {
-        var emptyAccount = new AccountModel() { 
-            Name = string.Empty,
+        var emptyAccount = new AccountModel() {
+            Email = user.Email,
             PhotoUrl = StaticFilesManager.StandardPhotoPath,
+
+            Name = string.Empty,
             Surname = string.Empty,
-            UserId = userId };
+            Patronymic = string.Empty,
+
+            UserId = user.Id 
+        };
 
         await _accountRepo.CreateEntityAsync(emptyAccount);
     }

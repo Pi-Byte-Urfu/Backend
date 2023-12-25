@@ -49,21 +49,19 @@ public class AccountController
     }
 
     [HttpPost]
-    [Route(template: "user/photo")]
+    [Route(template: "{id}/photo")]
     [Consumes("multipart/form-data")]
-    public async Task<IResult> UploadPhoto([FromHeader] UserAuthInfo authInfo, [FromForm] AccountUploadPhotoDto accountUploadPhotoDto)
+    public async Task<IResult> UploadPhoto([FromRoute] int id, [FromForm] AccountUploadPhotoDto accountUploadPhotoDto)
     {
-        var account = await GetAccountByUserIdAsync(authInfo.Id);
-        await _accountService.SavePhotoOnServerAsync(account.Id, accountUploadPhotoDto);
+        await _accountService.SavePhotoOnServerAsync(id, accountUploadPhotoDto);
         return Results.Ok();
     }
 
     [HttpGet]
-    [Route(template: "user/photo")]
-    public async Task<IResult> GetPhoto([FromHeader] UserAuthInfo authInfo)
+    [Route(template: "{id}/photo")]
+    public async Task<IResult> GetPhoto([FromRoute] int id)
     {
-        var account = await GetAccountByUserIdAsync(authInfo.Id);
-        var photoBytes = await _accountService.GetPhotoFromServerAsync(account.Id);
+        var photoBytes = await _accountService.GetPhotoFromServerAsync(id);
         return Results.File(fileContents: photoBytes, contentType: "image/png");
     }
 

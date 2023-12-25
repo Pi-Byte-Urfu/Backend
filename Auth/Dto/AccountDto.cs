@@ -6,22 +6,20 @@ namespace Backend.Auth.Dto;
 public class AccountGetDto : BaseDto
 {
     public int Id { get; set; }
-    public string Name { get; set; }
-    public string Surname { get; set; }
-    public string PhotoUrl { get; set; }
-}
+    public string Email { get; set; }
 
-public class AccountCreateDto : BaseDto
-{
-    public int UserId { get; set; }
     public string Name { get; set; }
     public string Surname { get; set; }
+    public string? Patronymic { get; set; }
+
+    public string PhotoUrl { get; set; }
 }
 
 public class AccountUpdateDto : BaseUpdateDto<AccountModel>
 {
     public string? Name { get; set; }
     public string? Surname { get; set; }
+    public string? Patronymic {  get; set; }
 
     public override AccountModel UpdateEntity(AccountModel entityToUpdate)
     {
@@ -29,6 +27,8 @@ public class AccountUpdateDto : BaseUpdateDto<AccountModel>
             entityToUpdate.Name = Name;
         if (Surname is not null)
             entityToUpdate.Surname = Surname;
+        if (Patronymic is not null)
+            entityToUpdate.Patronymic = Patronymic;
 
         return entityToUpdate;
     }

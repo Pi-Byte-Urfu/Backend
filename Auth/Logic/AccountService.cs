@@ -10,14 +10,12 @@ public class AccountService
     private IAccountRepo _accountRepo;
     private IHttpContextAccessor _httpContextAccessor;
     private IFileManager _fileManager;
-    private IUserIdGetter _userIdGetter;
 
-    public AccountService(IAccountRepo accountRepo, IFileManager fileManager, IHttpContextAccessor httpContextAccessor, IUserIdGetter userIdGetter)
+    public AccountService(IAccountRepo accountRepo, IFileManager fileManager, IHttpContextAccessor httpContextAccessor)
     {
         _accountRepo = accountRepo;
         _fileManager = fileManager;
         _httpContextAccessor = httpContextAccessor;
-        _userIdGetter = userIdGetter;
     }
 
     public async Task<AccountGetDto> GetAccountByIdAsync(int id)
@@ -29,7 +27,7 @@ public class AccountService
     public async Task<List<AccountGetDto>> GetAllAccountsAsync()
     {
         var accounts = await _accountRepo.GetAllEntitiesAsync();
-        return accounts.Select(account => MapEntityToGetDto(account)).ToList();
+        return accounts.Select(MapEntityToGetDto).ToList();
     }
 
     public async Task DeleteAccountByIdAsync(int id)
@@ -49,9 +47,11 @@ public class AccountService
         return new AccountGetDto()
         {
             Id = account.Id,
+            Email = account.Email,
             Name = account.Name,
             Surname = account.Surname,
-            PhotoUrl = $"{protocolString}://{context.Request.Host}/api/v1/accounts/user/photo",
+            Patronymic = account.Patronymic,
+            PhotoUrl = $"{protocolString}://{context.Request.Host}/api/v1/accounts/{account.Id}/photo",
         };
     }
 
