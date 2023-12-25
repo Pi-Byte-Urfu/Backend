@@ -31,10 +31,12 @@ public class PasswordHelperService : IPasswordHelperService
 
     public async Task<bool> IsPasswordCorrectAsync(UserModel user, UserLoginDto userLoginInfo)
     {
-        var passwordFromDatabaseObject = await _passwordRepo.GetPasswordByHash(GetPasswordHash(userLoginInfo.Password));
+        var passwordHash = GetPasswordHash(userLoginInfo.Password);
+        var passwordFromDatabaseObject = await _passwordRepo.GetPasswordByHash(passwordHash);
         if (passwordFromDatabaseObject is null)
             return false;
 
-        return userLoginInfo.Password == _encryptionService.DecryptString(passwordFromDatabaseObject.CryptedPassword);
+        var decryptedPassword = _encryptionService.DecryptString(passwordFromDatabaseObject.CryptedPassword);
+        return userLoginInfo.Password == decryptedPassword;
     }
 }

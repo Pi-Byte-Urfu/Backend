@@ -10,12 +10,14 @@ public class AccountService
     private IAccountRepo _accountRepo;
     private IHttpContextAccessor _httpContextAccessor;
     private IFileManager _fileManager;
+    private IUserIdGetter _userIdGetter;
 
-    public AccountService(IAccountRepo accountRepo, IFileManager fileManager, IHttpContextAccessor httpContextAccessor)
+    public AccountService(IAccountRepo accountRepo, IFileManager fileManager, IHttpContextAccessor httpContextAccessor, IUserIdGetter userIdGetter)
     {
         _accountRepo = accountRepo;
         _fileManager = fileManager;
         _httpContextAccessor = httpContextAccessor;
+        _userIdGetter = userIdGetter;
     }
 
     public async Task<AccountGetDto> GetAccountByIdAsync(int id)
@@ -49,7 +51,7 @@ public class AccountService
             Id = account.Id,
             Name = account.Name,
             Surname = account.Surname,
-            PhotoUrl = $"{protocolString}://{context.Request.Host}/api/v1/accounts/{account.Id}/photo",
+            PhotoUrl = $"{protocolString}://{context.Request.Host}/api/v1/accounts/user/photo",
         };
     }
 
