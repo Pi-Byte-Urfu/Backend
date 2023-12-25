@@ -53,30 +53,27 @@ public class CourseService
 
     private async Task<CourseGetOneDto> MapCourseToGetOneDto(CourseModel courseModel)
     {
-        var courseChapters = await GetChaptersByCourseId(courseModel.Id);
+        //var courseChapters = await GetChaptersByCourseId(courseModel.Id);
 
         return new CourseGetOneDto()
         {
             Id = courseModel.Id,
             Name = courseModel.Name,
             Description = courseModel.Description,
-            CoursePhoto = courseModel.CoursePhoto,
-            CreatorId = courseModel.CreatorId,
-            Chapters = MapChaptersToDto(courseChapters)
         };
     }
 
-    private async Task<List<CourseChaptersModel>> GetChaptersByCourseId(int courseId)
-    {
-        return await _courseChaptersRepo.GetChaptersByCourseIdAsync(courseId);
-    }
+    //private async Task<List<CourseChaptersModel>> GetChaptersByCourseId(int courseId)
+    //{
+    //    return await _courseChaptersRepo.GetChaptersByCourseIdAsync(courseId);
+    //}
 
-    private List<CourseGetOneDto.ChapterDto> MapChaptersToDto(List<CourseChaptersModel> courseChaptersModels)
-    {
-        return courseChaptersModels
-            .Select(chapter => new CourseGetOneDto.ChapterDto() { Id = chapter.Id, Name = chapter.Name })
-            .ToList();
-    }
+    //private List<CourseGetOneDto.ChapterDto> MapChaptersToDto(List<CourseChaptersModel> courseChaptersModels)
+    //{
+    //    return courseChaptersModels
+    //        .Select(chapter => new CourseGetOneDto.ChapterDto() { Id = chapter.Id, Name = chapter.Name })
+    //        .ToList();
+    //}
 
     private CourseGetAllDto MapCoursesToGetAllDto(List<CourseModel> courseModels)
     {

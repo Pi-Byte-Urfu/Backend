@@ -5,18 +5,15 @@ namespace Backend.Courses.Dto;
 
 public class CourseGetOneDto : BaseDto
 {
-    public class ChapterDto
-    {
-        public int Id { get; set; }
-        public string Name { get; set; }
-    }
+    //public class ChapterDto
+    //{
+    //    public int Id { get; set; }
+    //    public string Name { get; set; }
+    //}
 
     public int Id { get; set; }
     public string Name { get; set; }
     public string Description { get; set; }
-    public string CoursePhoto { get; set; }
-    public int CreatorId { get; set; }
-    public List<ChapterDto> Chapters { get; set; }
 }
 
 public class CourseGetAllDto : BaseDto
