@@ -3,11 +3,14 @@ using Backend.Auth.Dal.Interfaces;
 using Backend.Auth.Logic;
 using Backend.Auth.Logic.Interfaces;
 using Backend.Base.Services;
+using Backend.Base.Services.Filters;
 using Backend.Base.Services.Interfaces;
+using Backend.Base.Services.ModelBinders;
 using Backend.Courses.Dal;
 using Backend.Courses.Dal.Interfaces;
 using Backend.Courses.Logic;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
 
 namespace Backend;
 
@@ -29,9 +32,13 @@ public class DependencyInjectionConfiguring
     private void RegisterAspServices()
     {
         _services.AddHttpContextAccessor();
-        _services.AddControllers();
+        _services.AddControllers(options => options.ModelBinderProviders.Insert(0, new CustomDateTimeModelBinderProvider()));
         _services.AddEndpointsApiExplorer();
-        _services.AddSwaggerGen();
+        //_services.AddSwaggerGen(options => options.OperationFilter<SwaggerAuthorizationHeaderFilter>());
+        _services.AddSwaggerGen(c =>
+        {
+            c.OperationFilter<SwaggerAuthorizationHeaderFilter>();
+        });
         _services.AddDbContext<AppDatabase>(options => options.UseNpgsql());
     }
 
@@ -91,5 +98,6 @@ public class DependencyInjectionConfiguring
         _services.AddScoped<IEncryptionService, EncryptionService>();
 
         _services.AddScoped<IFileManager, StaticFilesManager>();
+        _services.AddScoped<IUserIdGetter, UserIdGetter>();
     }
 }

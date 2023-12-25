@@ -26,7 +26,8 @@ public class AccountRepo : BaseRepo<AccountModel>, IAccountRepo
 
     public async Task<AccountModel> GetAccountByUserIdAsync(int userId)
     {
-        return await table.Where(account => account.UserId == userId).FirstOrDefaultAsync();
+        var account = await table.Where(account => account.UserId == userId).FirstOrDefaultAsync();
+        return account;
     }
 
     public async Task<int> UpdateAccountByUserIdAsync(int userId, AccountUpdateDto accountUpdateDto)
