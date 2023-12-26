@@ -90,6 +90,7 @@ public class DependencyInjectionConfiguring
     {
         _services.AddScoped<GroupService>();
         _services.AddScoped<CourseService>();
+        _services.AddScoped<CourseChaptersService>();
     }
 
     private void RegisterHelperServices()

@@ -1,6 +1,8 @@
 ﻿using Backend.Courses.Dto;
 using Backend.Courses.Dal.Interfaces;
 using Backend.Courses.Dal.Models;
+using Backend.Base.Services.Interfaces;
+using Backend.Base.Services;
 
 namespace Backend.Courses.Logic;
 
@@ -8,11 +10,15 @@ public class CourseService
 {
     private ICourseRepo _courseRepo;
     private ICourseChaptersRepo _courseChaptersRepo;
+    private IFileManager _fileManager;
+    private IHttpContextAccessor _httpContextAccessor;
 
-    public CourseService(ICourseRepo courseRepo, ICourseChaptersRepo courseChaptersRepo)
+    public CourseService(ICourseRepo courseRepo, ICourseChaptersRepo courseChaptersRepo, IFileManager fileManager, IHttpContextAccessor httpContextAccessor)
     {
         _courseRepo = courseRepo;
         _courseChaptersRepo = courseChaptersRepo;
+        _fileManager = fileManager;
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<CourseGetOneDto> GetCourseByIdAsync(int id)
@@ -34,7 +40,7 @@ public class CourseService
         {
             Name = courseCreateDto.Name,
             Description = courseCreateDto.Description,
-            CoursePhoto = "Заглушка", // Fix later to normal photos
+            CoursePhoto = StaticFilesManager.StandardPhotoPath, // Some time ago there was Заглушка
             CreatorId = courseCreateDto.CreatorId
         };
 
@@ -87,12 +93,31 @@ public class CourseService
 
     private CourseGetAllDto.CourseDto MapCourseToCourseDtoForGetAllDto(CourseModel courseModel)
     {
+        var context = _httpContextAccessor.HttpContext;
+        var protocolString = context.Request.IsHttps ? "https" : "http";
+
         return new CourseGetAllDto.CourseDto() { 
             Id = courseModel.Id,
             Name = courseModel.Name,
-            CoursePhoto = courseModel.CoursePhoto,
+            CoursePhoto = $"{protocolString}://{context.Request.Host}/api/v1/courses/{courseModel.Id}/photo",
             Description = courseModel.Description,
             CreatorId = courseModel.CreatorId
         };
+    }
+
+    public async Task SaveCoursePhotoOnServerAsync(int courseId, CourseUploadPhotoDto courseUploadPhotoDto)
+    {
+        var file = courseUploadPhotoDto.Photo;
+        var filePath = await _fileManager.UploadFileAsync(file: file, fileType: Base.Enums.FileType.Photo);
+
+        await _courseRepo.UpdatePhotoPathAsync(courseId, filePath);
+    }
+
+    public async Task<byte[]> GetCoursePhotoFromServerAsync(int courseId)
+    {
+        var account = await _courseRepo.GetEntityByIdAsync(courseId);
+        var pathToFile = account.CoursePhoto;
+
+        return await _fileManager.GetFileBytesAsync(path: pathToFile, fileType: Base.Enums.FileType.Photo);
     }
 }

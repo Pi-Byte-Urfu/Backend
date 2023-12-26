@@ -10,4 +10,12 @@ public class CourseRepo : BaseRepo<CourseModel>, ICourseRepo
     {
 
     }
+
+    public async Task UpdatePhotoPathAsync(int courseId, string photoPath)
+    {
+        var course = await this.GetEntityByIdAsync(courseId);
+        course.CoursePhoto = photoPath;
+        
+        await _database.SaveChangesAsync();
+    }
 }

@@ -3,3 +3,4 @@
 /.vs
 /database_settings.json
 /docker-compose.yml
+/static_files

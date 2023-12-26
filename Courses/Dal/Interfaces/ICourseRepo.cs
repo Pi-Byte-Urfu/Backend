@@ -5,5 +5,5 @@ namespace Backend.Courses.Dal.Interfaces;
 
 public interface ICourseRepo : IBaseRepo<CourseModel>
 {
-
+    public Task UpdatePhotoPathAsync(int courseId, string photoPath);
 }

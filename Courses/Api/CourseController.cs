@@ -48,4 +48,20 @@ public class CourseController
     {
         await _courseService.UpdateCourseAsync(id, updateCourseDto);
     }
+
+    [HttpPost]
+    [Route("{id}/photo")]
+    public async Task<IResult> UploadCoursePhoto([FromRoute] int id, [FromForm] CourseUploadPhotoDto courseUploadPhoto)
+    {
+        await _courseService.SaveCoursePhotoOnServerAsync(id, courseUploadPhoto);
+        return Results.Ok();
+    }
+
+    [HttpGet]
+    [Route("{id}/photo")]
+    public async Task<IResult> GetCoursePhoto([FromRoute] int id)
+    {
+        var photoBytes = await _courseService.GetCoursePhotoFromServerAsync(id);
+        return Results.File(fileContents: photoBytes, contentType: "image/png");
+    }
 }

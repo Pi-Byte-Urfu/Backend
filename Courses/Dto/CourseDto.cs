@@ -52,3 +52,8 @@ public class CourseUpdateDto : BaseUpdateDto<CourseModel>
         return entityToUpdate;
     }
 }
+
+public class CourseUploadPhotoDto
+{
+    public IFormFile Photo { get; set; }
+}
