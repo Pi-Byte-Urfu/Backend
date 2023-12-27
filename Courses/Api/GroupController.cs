@@ -1,4 +1,5 @@
-﻿using Backend.Courses.Dto;
+﻿using Backend.Base.Dto;
+using Backend.Courses.Dto;
 using Backend.Courses.Logic;
 using Microsoft.AspNetCore.Mvc;
 
@@ -38,9 +39,10 @@ public class GroupController
     }
 
     [HttpPost]
-    public async Task<int> CreateGroup([FromBody] GroupCreateDto createGroupDto)
+    public async Task<BaseIdDto> CreateGroup([FromBody] GroupCreateDto createGroupDto)
     {
-        return await _groupService.CreateGroupAsync(createGroupDto);
+        var id = await _groupService.CreateGroupAsync(createGroupDto);
+        return new BaseIdDto { Id = id };
     }
 
     [HttpDelete]

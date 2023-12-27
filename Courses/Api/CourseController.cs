@@ -1,4 +1,5 @@
-﻿using Backend.Courses.Dto;
+﻿using Backend.Base.Dto;
+using Backend.Courses.Dto;
 using Backend.Courses.Logic;
 using Microsoft.AspNetCore.Mvc;
 
@@ -30,9 +31,10 @@ public class CourseController
     }
 
     [HttpPost]
-    public async Task<int> CreateCourse([FromBody] CourseCreateDto createCourseDto)
+    public async Task<BaseIdDto> CreateCourse([FromBody] CourseCreateDto createCourseDto)
     {
-        return await _courseService.CreateCourseAsync(createCourseDto);
+        var id = await _courseService.CreateCourseAsync(createCourseDto);
+        return new BaseIdDto { Id = id };
     }
 
     [HttpDelete]
