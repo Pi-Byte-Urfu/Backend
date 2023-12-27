@@ -6,6 +6,9 @@ using Backend.Base.Services;
 using Backend.Base.Services.Filters;
 using Backend.Base.Services.Interfaces;
 using Backend.Base.Services.ModelBinders;
+using Backend.CoursePages.Dal;
+using Backend.CoursePages.Dal.Interfaces;
+using Backend.CoursePages.Logic;
 using Backend.Courses.Dal;
 using Backend.Courses.Dal.Interfaces;
 using Backend.Courses.Logic;
@@ -52,6 +55,7 @@ public class DependencyInjectionConfiguring
     {
         RegisterAuthDbRepos();
         RegisterCoursesDbRepos();
+        RegisterCoursePagesDbRepos();
     }
 
     private void RegisterAuthDbRepos()
@@ -73,11 +77,26 @@ public class DependencyInjectionConfiguring
         _services.AddScoped<IStudentGroupsRepo, StudentGroupsRepo>();
     }
 
+    private void RegisterCoursePagesDbRepos()
+    {
+        _services.AddScoped<ICoursePageRepo, CoursePageRepo>();
+        _services.AddScoped<ITaskPageRepo, TaskPageRepo>();
+        _services.AddScoped<ITestPageRepo, TestPageRepo>();
+        _services.AddScoped<IOpenedQuestionRepo, OpenedQuestionRepo>();
+        _services.AddScoped<IOneOptionQuestionRepo, OneOptionQuestionRepo>();
+        _services.AddScoped<IManyOptionQuestionRepo, ManyOptionQuestionRepo>();
+        _services.AddScoped<IQuestionOptionRepo, QuestionOptionRepo>();
+        _services.AddScoped<ITheoryPageRepo, TheoryPageRepo>();
+        _services.AddScoped<ITestQuestionRepo, TestQuestionRepo>();
+    }
+
+
     private void RegisterBusinessServices()
     {
         RegisterHelperServices();
         RegisterAuthLogic();
         RegisterCoursesLogic();
+        RegisterCoursePagesLogic();
     }
 
     private void RegisterAuthLogic()
@@ -91,6 +110,11 @@ public class DependencyInjectionConfiguring
         _services.AddScoped<GroupService>();
         _services.AddScoped<CourseService>();
         _services.AddScoped<CourseChaptersService>();
+    }
+
+    private void RegisterCoursePagesLogic()
+    {
+        _services.AddScoped<CoursePagesService>();
     }
 
     private void RegisterHelperServices()
