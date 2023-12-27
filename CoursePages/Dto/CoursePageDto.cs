@@ -42,7 +42,7 @@ public class CourseTestPageGetOneDto
         public int Difficulty { get; set; }
         public int QuestionScore { get; set; }
         public int SequenceNumber { get; set; }
-        public string Name { get; set; }
+        public string Text { get; set; }
         public TestQuestionType QuestionType { get; set; }
     }
     public string Name { get; set; }

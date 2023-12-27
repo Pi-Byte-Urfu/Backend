@@ -74,36 +74,68 @@ public class CoursePagesService
 
     private CoursePageGetAllDto MapAllPagesToGetAllDto(List<CoursePageModel> coursePageModels)
     {
-        throw new NotImplementedException();
+        return new CoursePageGetAllDto()
+        {
+            CoursePages = coursePageModels
+                .Select(x => new CoursePageGetAllDto.CoursePageBaseGetOneDto() { Id = x.Id, Name = x.Name, PageType = x.PageType })
+                .ToList()
+        };
     }
 
-    private Task CreateSubPage(int pageId, CoursePageModel pageModel)
+    private async Task CreateSubPage(int pageId, CoursePageModel pageModel)
     {
-        throw new NotImplementedException();
+        if (pageModel.PageType is Enums.CoursePageType.Theory)
+        {
+            await _theoryPageRepo.CreateEntityAsync(new TheoryPageModel()
+            {
+                Content = "",
+                PageId = pageId,
+            });
+        }
+        else if (pageModel.PageType is Enums.CoursePageType.Test)
+        {
+            await _testPageRepo.CreateEntityAsync(new TestPageModel()
+            {
+                PageId = pageId,
+            });
+        }
+        else if (pageModel.PageType is Enums.CoursePageType.Task)
+        {
+            await _taskPageRepo.CreateEntityAsync(new TaskPageModel()
+            {
+                Content = "",
+                PageId = pageId,
+            });
+        }
+        else
+            throw new Exception("Don't know this type");
     }
 
     private CourseTheoryPageGetOneDto MapTheoryPageToDto(CoursePageModel baseModel, TheoryPageModel theoryPageModel)
     {
-        throw new NotImplementedException();
+        return new CourseTheoryPageGetOneDto() { Content = theoryPageModel.Content, Name = baseModel.Name };
     }
 
     private CourseTestPageGetOneDto MapTestPageToDto(CoursePageModel baseModel, List<TestQuestionModel> questionModels)
     {
-        throw new NotImplementedException();
+        return new CourseTestPageGetOneDto()
+        {
+            Name = baseModel.Name,
+            Questions = questionModels.Select(que => new CourseTestPageGetOneDto.QuestionDto()
+            {
+                Id = que.Id,
+                Difficulty = que.Difficulty,
+                QuestionScore = que.QuestionScore,
+                SequenceNumber = que.SequenceNumber,
+                Text = que.Text,
+                QuestionType = que.QuestionType,
+            })
+            .ToList()
+        };
     }
 
     private CourseTaskPageGetOneDto MapTaskPageToDto(CoursePageModel baseModel, TaskPageModel taskPageModel)
     {
-        throw new NotImplementedException();
+        return new CourseTaskPageGetOneDto() { Content = taskPageModel.Content, Name = baseModel.Name };
     }
-
-    //public async Task<QuestionOptionsGetAllDto> GetQuestionOptions(int questionId)
-    //{
-    //    throw new NotImplementedException();
-    //}
-
-    //public async Task<QuestionOpenedGetOneDto> GetOpenedQuestion(int questionId)
-    //{
-    //    throw new NotImplementedException();
-    //}
 }

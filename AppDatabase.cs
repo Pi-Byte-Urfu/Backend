@@ -24,6 +24,7 @@ public class AppDatabase : DbContext
     public DbSet<StudentGroupsModel> StudentGroups { get; set; }
 
     //CoursePages
+    public DbSet<CoursePageModel> CoursePages { get; set; }
     public DbSet<TaskPageModel> TaskPages { get; set; }
     public DbSet<TestPageModel> TestPages { get; set; }
     public DbSet<OpenedQuestionModel> OpenedQuestions { get; set; }

@@ -8,6 +8,7 @@ using Backend.Base.Services.Interfaces;
 using Backend.Base.Services.ModelBinders;
 using Backend.CoursePages.Dal;
 using Backend.CoursePages.Dal.Interfaces;
+using Backend.CoursePages.Logic;
 using Backend.Courses.Dal;
 using Backend.Courses.Dal.Interfaces;
 using Backend.Courses.Logic;
@@ -78,6 +79,7 @@ public class DependencyInjectionConfiguring
 
     private void RegisterCoursePagesDbRepos()
     {
+        _services.AddScoped<ICoursePageRepo, CoursePageRepo>();
         _services.AddScoped<ITaskPageRepo, TaskPageRepo>();
         _services.AddScoped<ITestPageRepo, TestPageRepo>();
         _services.AddScoped<IOpenedQuestionRepo, OpenedQuestionRepo>();
@@ -94,6 +96,7 @@ public class DependencyInjectionConfiguring
         RegisterHelperServices();
         RegisterAuthLogic();
         RegisterCoursesLogic();
+        RegisterCoursePagesLogic();
     }
 
     private void RegisterAuthLogic()
@@ -107,6 +110,11 @@ public class DependencyInjectionConfiguring
         _services.AddScoped<GroupService>();
         _services.AddScoped<CourseService>();
         _services.AddScoped<CourseChaptersService>();
+    }
+
+    private void RegisterCoursePagesLogic()
+    {
+        _services.AddScoped<CoursePagesService>();
     }
 
     private void RegisterHelperServices()

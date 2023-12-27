@@ -135,6 +135,29 @@ namespace Backend.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Backend.CoursePages.Dal.Models.CoursePageModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChapterId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("PageType")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CoursePages");
+                });
+
             modelBuilder.Entity("Backend.CoursePages.Dal.Models.ManyOptionQuestionModel", b =>
                 {
                     b.Property<int>("Id")
@@ -210,7 +233,7 @@ namespace Backend.Migrations
                     b.ToTable("QuestionOptions");
                 });
 
-            modelBuilder.Entity("Backend.CoursePages.Dal.Models.TaskPage", b =>
+            modelBuilder.Entity("Backend.CoursePages.Dal.Models.TaskPageModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

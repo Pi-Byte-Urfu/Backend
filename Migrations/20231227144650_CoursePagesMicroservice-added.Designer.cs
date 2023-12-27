@@ -11,8 +11,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Backend.Migrations
 {
     [DbContext(typeof(AppDatabase))]
-    [Migration("20231227112300_CoursePagesMicroservice-added-27.12-2023")]
-    partial class CoursePagesMicroserviceadded27122023
+    [Migration("20231227144650_CoursePagesMicroservice-added")]
+    partial class CoursePagesMicroserviceadded
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -138,6 +138,29 @@ namespace Backend.Migrations
                     b.ToTable("Users");
                 });
 
+            modelBuilder.Entity("Backend.CoursePages.Dal.Models.CoursePageModel", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("ChapterId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<int>("PageType")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CoursePages");
+                });
+
             modelBuilder.Entity("Backend.CoursePages.Dal.Models.ManyOptionQuestionModel", b =>
                 {
                     b.Property<int>("Id")
@@ -213,7 +236,7 @@ namespace Backend.Migrations
                     b.ToTable("QuestionOptions");
                 });
 
-            modelBuilder.Entity("Backend.CoursePages.Dal.Models.TaskPage", b =>
+            modelBuilder.Entity("Backend.CoursePages.Dal.Models.TaskPageModel", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()

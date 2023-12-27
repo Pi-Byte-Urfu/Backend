@@ -6,11 +6,26 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Backend.Migrations
 {
     /// <inheritdoc />
-    public partial class CoursePagesMicroserviceadded27122023 : Migration
+    public partial class CoursePagesMicroserviceadded : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.CreateTable(
+                name: "CoursePages",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "integer", nullable: false)
+                        .Annotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.IdentityByDefaultColumn),
+                    ChapterId = table.Column<int>(type: "integer", nullable: false),
+                    Name = table.Column<string>(type: "text", nullable: false),
+                    PageType = table.Column<int>(type: "integer", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CoursePages", x => x.Id);
+                });
+
             migrationBuilder.CreateTable(
                 name: "ManyOptionQuestions",
                 columns: table => new
@@ -129,6 +144,9 @@ namespace Backend.Migrations
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "CoursePages");
+
             migrationBuilder.DropTable(
                 name: "ManyOptionQuestions");
 
