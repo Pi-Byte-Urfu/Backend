@@ -1,4 +1,5 @@
 ﻿using Backend.Auth.Dal.Models;
+using Backend.CoursePages.Dal.Models;
 using Backend.Courses.Dal.Models;
 using Microsoft.EntityFrameworkCore;
 
@@ -21,6 +22,16 @@ public class AppDatabase : DbContext
     public DbSet<CourseModel> Courses { get; set; }
     public DbSet<GroupCoursesModel> GroupCourses { get; set; }
     public DbSet<StudentGroupsModel> StudentGroups { get; set; }
+
+    //CoursePages
+    public DbSet<TaskPageModel> TaskPages { get; set; }
+    public DbSet<TestPageModel> TestPages { get; set; }
+    public DbSet<OpenedQuestionModel> OpenedQuestions { get; set; }
+    public DbSet<OneOptionQuestionModel> OneOptionQuestions { get; set; }
+    public DbSet<ManyOptionQuestionModel> ManyOptionQuestions { get; set; }
+    public DbSet<QuestionOptionModel> QuestionOptions { get; set; }
+    public DbSet<TheoryPageModel> TheoryPages { get; set; }
+    public DbSet<TestQuestionModel> TestQuestions { get; set; }
 
     public AppDatabase(DbContextOptions<AppDatabase> options, IConfiguration config) : base(options)
     {
