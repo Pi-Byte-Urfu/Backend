@@ -12,6 +12,12 @@ public class TaskPageRepo : BaseRepo<TaskPageModel>, ITaskPageRepo
 
     }
 
+    public async Task DeleteByPageId(int pageId)
+    {
+        table.Remove(table.Where(page => page.PageId == pageId).First());
+        await _database.SaveChangesAsync();
+    }
+
     public async Task UpdateContent(int pageId, string content)
     {
         var taskPage = await table.Where(taPage => taPage.PageId == pageId).FirstAsync();

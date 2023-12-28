@@ -12,6 +12,12 @@ public class TheoryPageRepo : BaseRepo<TheoryPageModel>, ITheoryPageRepo
 
     }
 
+    public async Task DeleteByPageId(int pageId)
+    {
+        table.Remove(table.Where(page =>  page.PageId == pageId).First());
+        await _database.SaveChangesAsync();
+    }
+
     public async Task UpdateContent(int pageId, string content)
     {
         var theoryPage = await table.Where(thPage => thPage.PageId == pageId).FirstAsync();

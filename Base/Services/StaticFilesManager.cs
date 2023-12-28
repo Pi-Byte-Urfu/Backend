@@ -1,5 +1,4 @@
-﻿using Backend.Auth.Dto;
-using Backend.Base.Enums;
+﻿using Backend.Base.Enums;
 using Backend.Base.Services.Interfaces;
 
 namespace Backend.Base.Services;
@@ -25,8 +24,9 @@ public class StaticFilesManager : IFileManager
         var fileDirectoryPath = GetFileDirectoryPath(fileType);
         CreateDirectoryIfNotExists(fileDirectoryPath);
         var guid = GetRandomGuid();
-
-        var filePath = GeneratePath(fileDirectoryPath, guid);
+        var extenstion = Path.GetExtension(file.FileName);
+        
+        var filePath = GeneratePath(fileDirectoryPath, guid, extenstion);
 
         using (var fileStream = new FileStream(path: filePath, mode: FileMode.CreateNew))
         {
@@ -36,7 +36,7 @@ public class StaticFilesManager : IFileManager
         return filePath;
     }
 
-    private static string GetFileDirectoryPath(FileType fileType)
+    public static string GetFileDirectoryPath(FileType fileType)
     {
         var baseDirectory = AppDomain.CurrentDomain.BaseDirectory;
 
@@ -48,8 +48,11 @@ public class StaticFilesManager : IFileManager
         };
     }
 
-    private static string GeneratePath(string directory, string name)
+    private static string GeneratePath(string directory, string name, string? extension)
     {
+        if (extension is not null)
+            return Path.Combine(directory, name) + extension;
+
         return Path.Combine(directory, name);
     }
 
