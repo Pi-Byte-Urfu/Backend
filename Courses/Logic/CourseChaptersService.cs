@@ -18,7 +18,7 @@ public class CourseChaptersService
         var chapters = await _courseChaptersRepo.GetChaptersByCourseIdAsync(courseId);
         return new CourseChaptersGetByCourseIdResponse()
         {
-            CourseChapters = chapters.Select(MapChapterModelToGetOneDto).ToList(),
+            CourseChapters = chapters.Select(MapChapterModelToGetOneDto).OrderBy(x => x.Id).ToList(),
         };
     }
 
