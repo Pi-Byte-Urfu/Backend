@@ -56,4 +56,28 @@ public class CoursePagesController
         var taskPageDto = await _coursePagesService.GetTaskPage(pageId);
         return taskPageDto;
     }
+
+    [HttpPatch]
+    [Route(template: "0/{pageId}")]
+    public async Task<IResult> UpdateTheoryPage(int pageId, CourseTheoryPageUpdateDto courseTheoryPageUpdateDto)
+    {
+        await _coursePagesService.UpdateTheoryPage(pageId, courseTheoryPageUpdateDto);
+        return Results.Ok();
+    }
+
+    [HttpPatch]
+    [Route(template: "1/{pageId}")]
+    public async Task<IResult> UpdateTestPage(int pageId, CourseTestPageUpdateDto courseTestPageUpdateDto)
+    {
+        await _coursePagesService.UpdateTestPage(pageId, courseTestPageUpdateDto);
+        return Results.Ok();
+    }
+
+    [HttpPatch]
+    [Route(template: "2/{pageId}")]
+    public async Task<IResult> UpdateTaskPage(int pageId, CourseTaskPageUpdateDto courseTaskPageUpdateDto)
+    {
+        await _coursePagesService.UpdateTaskPage(pageId, courseTaskPageUpdateDto);
+        return Results.Ok();
+    }
 }

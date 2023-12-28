@@ -5,5 +5,5 @@ namespace Backend.CoursePages.Dal.Interfaces;
 
 public interface ITheoryPageRepo : IBaseRepo<TheoryPageModel>
 {
-    // Дополнительные методы, если необходимо
+    public Task UpdateContent(int pageId, string content);
 }
