@@ -31,6 +31,13 @@ public class CourseChaptersController
         return new BaseIdDto { Id = id };
     }
 
+    [HttpGet]
+    [Route("{id}")]
+    public async Task<CourseChaptersGetOneDto> GetChapterById([FromRoute] int id)
+    {
+        return await _courseChaptersService.GetOneChapterById(id);
+    }
+
     [HttpDelete]
     [Route("{id}")]
     public async Task DeleteChapterById([FromRoute] int id)

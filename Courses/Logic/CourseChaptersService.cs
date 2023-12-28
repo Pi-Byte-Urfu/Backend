@@ -51,4 +51,10 @@ public class CourseChaptersService
             Name = courseChaptersModel.Name,
         };
     }
+
+    public async Task<CourseChaptersGetOneDto> GetOneChapterById(int id)
+    {
+        var chapter = await _courseChaptersRepo.GetEntityByIdAsync(id);
+        return new CourseChaptersGetOneDto() { Id = chapter.Id, Name = chapter.Name };
+    }
 }

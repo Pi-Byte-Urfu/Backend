@@ -6,4 +6,5 @@ namespace Backend.CoursePages.Dal.Interfaces;
 public interface ICoursePageRepo : IBaseRepo<CoursePageModel>
 {
     public Task<List<CoursePageModel>> GetCoursePagesByChapterIdAsync(int chapterId);
+    public Task UpdateName(int pageId, string name);
 }

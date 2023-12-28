@@ -16,4 +16,12 @@ public class CoursePageRepo : BaseRepo<CoursePageModel>, ICoursePageRepo
     {
         return await table.Where(coursePage => coursePage.ChapterId == chapterId).ToListAsync();
     }
+
+    public async Task UpdateName(int pageId, string name)
+    {
+        var page = await GetEntityByIdAsync(pageId);
+        page.Name = name;
+
+        await _database.SaveChangesAsync();
+    }
 }

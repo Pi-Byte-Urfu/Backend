@@ -72,6 +72,28 @@ public class CoursePagesService
         return MapTestPageToDto(basePage, questions);
     }
 
+    public async Task UpdateTheoryPage(int pageId, CourseTheoryPageUpdateDto courseTheoryPageUpdateDto)
+    {
+        if (courseTheoryPageUpdateDto.Name is not null)
+            await _coursePageRepo.UpdateName(pageId, courseTheoryPageUpdateDto.Name);
+        if (courseTheoryPageUpdateDto.Content is not null)
+            await _theoryPageRepo.UpdateContent(pageId, courseTheoryPageUpdateDto.Content);
+    }
+
+    public async Task UpdateTaskPage(int pageId, CourseTaskPageUpdateDto courseTaskPageUpdate)
+    {
+        if (courseTaskPageUpdate.Name is not null)
+            await _coursePageRepo.UpdateName(pageId, courseTaskPageUpdate.Name);
+        if (courseTaskPageUpdate.Content is not null)
+            await _taskPageRepo.UpdateContent(pageId, courseTaskPageUpdate.Content);
+    }
+
+    public async Task UpdateTestPage(int pageId, CourseTestPageUpdateDto courseTestPageUpdate)
+    {
+        if (courseTestPageUpdate.Name is not null)
+            await _coursePageRepo.UpdateName(pageId, courseTestPageUpdate.Name);
+    }
+
     private CoursePageGetAllDto MapAllPagesToGetAllDto(List<CoursePageModel> coursePageModels)
     {
         return new CoursePageGetAllDto()

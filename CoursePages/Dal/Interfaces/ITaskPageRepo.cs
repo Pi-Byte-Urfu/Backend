@@ -5,5 +5,5 @@ namespace Backend.CoursePages.Dal.Interfaces;
 
 public interface ITaskPageRepo : IBaseRepo<TaskPageModel>
 {
-    // Дополнительные методы, если необходимо
+    public Task UpdateContent(int pageId, string content);
 }
