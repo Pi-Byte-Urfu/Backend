@@ -51,17 +51,17 @@ public class CourseTestPageGetOneDto
 
 public class CourseTheoryPageUpdateDto : BaseDto
 {
-    public string Name { get; set; }
-    public string Content { get; set; }
+    public string? Name { get; set; }
+    public string? Content { get; set; }
 }
 
 public class CourseTaskPageUpdateDto : BaseDto
 {
-    public string Name { get; set; }
-    public string Content { get; set; }
+    public string? Name { get; set; }
+    public string? Content { get; set; }
 }
 
 public class CourseTestPageUpdateDto : BaseDto
 {
-    public string Name { get; set; }
+    public string? Name { get; set; }
 }
