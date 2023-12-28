@@ -144,6 +144,7 @@ public class CoursePagesService
         {
             CoursePages = coursePageModels
                 .Select(x => new CoursePageGetAllDto.CoursePageBaseGetOneDto() { Id = x.Id, Name = x.Name, PageType = x.PageType })
+                .OrderBy(x => x.Id)
                 .ToList()
         };
     }
