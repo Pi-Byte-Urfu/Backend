@@ -94,6 +94,50 @@ public class CoursePagesService
             await _coursePageRepo.UpdateName(pageId, courseTestPageUpdate.Name);
     }
 
+    public async Task DeletePage(int pageId)
+    {
+        var basePage = await _coursePageRepo.GetEntityByIdAsync(pageId);
+        switch (basePage.PageType)
+        {
+            case Enums.CoursePageType.Theory:
+                await DeleteTheoryPage(pageId);
+                break;
+            case Enums.CoursePageType.Test:
+                await DeleteTestPage(pageId);
+                break;
+            case Enums.CoursePageType.Task:
+                await DeleteTaskPage(pageId);
+                break;
+            default:
+                break;
+        }
+
+        await _coursePageRepo.DeleteEntityByIdAsync(pageId);
+    }
+
+    private async Task DeleteTheoryPage(int pageId)
+    {
+        await _theoryPageRepo.DeleteByPageId(pageId);
+    }
+
+    private async Task DeleteTaskPage(int pageId)
+    {
+        await _taskPageRepo.DeleteByPageId(pageId);
+    }
+
+    private async Task DeleteTestPage(int pageId)
+    {
+        var testPage = await _testPageRepo.GetTestPageModelByPageIdAsync(pageId);
+        // await DeleteAllTypesOfQuestions(testPage.Id); TODO: LATER
+
+        await _testQuestionRepo.DeleteAllQuestionByTestIdAsync(pageId);
+        await _testPageRepo.DeleteEntityByIdAsync(pageId);
+    }
+    private async Task DeleteAllTypesOfQuestions(int testId)
+    {
+        throw new NotImplementedException();
+    }
+
     private CoursePageGetAllDto MapAllPagesToGetAllDto(List<CoursePageModel> coursePageModels)
     {
         return new CoursePageGetAllDto()

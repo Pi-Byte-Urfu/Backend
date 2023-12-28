@@ -7,7 +7,7 @@ namespace Backend.Courses.Dal;
 
 public class GroupRepo : BaseRepo<GroupModel>, IGroupRepo
 {
-    private AppDatabase _database;
+    protected AppDatabase _database;
 
     public GroupRepo(AppDatabase database) : base(database)
     {

@@ -5,5 +5,5 @@ namespace Backend.CoursePages.Dal.Interfaces;
 
 public interface ITestPageRepo : IBaseRepo<TestPageModel>
 {
-    // Дополнительные методы, если необходимо
+    public Task<TestPageModel> GetTestPageModelByPageIdAsync(int pageId);
 }

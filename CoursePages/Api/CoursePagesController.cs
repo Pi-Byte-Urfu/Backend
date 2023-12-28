@@ -80,4 +80,12 @@ public class CoursePagesController
         await _coursePagesService.UpdateTaskPage(pageId, courseTaskPageUpdateDto);
         return Results.Ok();
     }
+
+    [HttpDelete]
+    [Route("{pageId}")]
+    public async Task<IResult> DeletePage([FromRoute] int pageId)
+    {
+        await _coursePagesService.DeletePage(pageId);
+        return Results.Ok();
+    }
 }
