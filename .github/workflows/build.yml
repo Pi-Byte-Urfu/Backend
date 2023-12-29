@@ -17,4 +17,5 @@ jobs:
           script: |
             cd /opt/app-backend/Backend
             git pull origin master
+            cd /opt/app-backend
             docker compose up -d --build
