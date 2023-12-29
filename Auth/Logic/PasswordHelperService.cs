@@ -1,4 +1,7 @@
-﻿using Backend.Auth.Dal.Interfaces;
+﻿using System.Security.Cryptography;
+using System.Text;
+
+using Backend.Auth.Dal.Interfaces;
 using Backend.Auth.Dal.Models;
 using Backend.Auth.Dto;
 using Backend.Auth.Logic.Interfaces;
@@ -7,6 +10,7 @@ namespace Backend.Auth.Logic;
 
 public class PasswordHelperService : IPasswordHelperService
 {
+    private static readonly SHA256 sha256 = SHA256.Create();
     private IEncryptionService _encryptionService;
     private IPasswordRepo _passwordRepo;
 
@@ -16,7 +20,15 @@ public class PasswordHelperService : IPasswordHelperService
         _passwordRepo = passwordRepo;
     }
 
-    public int GetPasswordHash(string password) => password.GetHashCode();
+    public int GetPasswordHash(string password)
+    {
+        byte[] passwordBytes = Encoding.UTF8.GetBytes(password);
+        byte[] hashBytes = sha256.ComputeHash(passwordBytes);
+
+        int hashInt = BitConverter.ToInt32(hashBytes, 0);
+
+        return hashInt;
+    }
 
     public async Task<int> AddHashedPasswordToDatabaseAsync(string password)
     {
