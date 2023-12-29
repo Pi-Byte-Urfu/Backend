@@ -14,19 +14,22 @@ public class UserService
     private IStudentRepo _studentRepo;
     private ITeacherRepo _teacherRepo;
     private IAccountRepo _accountRepo;
+    private IPasswordRepo _passwordRepo;
 
     public UserService(
         IUserRepo userRepo,
         IPasswordHelperService passwordHelper,
         IStudentRepo studentRepo,
         ITeacherRepo teacherRepo,
-        IAccountRepo accountRepo)
+        IAccountRepo accountRepo,
+        IPasswordRepo passwordRepo)
     {
         _passwordHelper = passwordHelper;
         _userRepo = userRepo;
         _studentRepo = studentRepo;
         _teacherRepo = teacherRepo;
         _accountRepo = accountRepo;
+        _passwordRepo = passwordRepo;
     }
 
     public async Task<UserAuthResponseDto> Login(UserLoginDto userLoginInfo)
@@ -75,6 +78,20 @@ public class UserService
         };
 
         await _accountRepo.CreateEntityAsync(emptyAccount);
+    }
+
+    public async Task ChangePassword(int userId, string oldPassword, string newPassword)
+    {
+        var user = await _userRepo.GetEntityByIdAsync(userId);
+        var loginDto = new UserLoginDto() { Email = user.Email, Password = oldPassword };
+        if (!(await _passwordHelper.IsPasswordCorrectAsync(user, loginDto)))
+            throw new BadHttpRequestException(statusCode: 400, message: "Неправильный старый пароль");
+        
+        var oldHashedPassword = _passwordHelper.GetPasswordHash(oldPassword);
+        var oldPasswordModel = await _passwordRepo.GetPasswordByHash(oldHashedPassword);
+        await _passwordRepo.DeleteEntityByIdAsync(oldPasswordModel.Id);
+
+        await _passwordHelper.AddHashedPasswordToDatabaseAsync(newPassword);
     }
 
     public async Task AddToNeeededUserTypeEntityAsync(UserModel user)
