@@ -16,4 +16,12 @@ public class UserRepo : BaseRepo<UserModel>, IUserRepo
     {
         return await table.FirstOrDefaultAsync(user => user.Email == email);
     }
+
+    public async Task UpdatePasswordHash(int userId, int newHash)
+    {
+        var user = await GetEntityByIdAsync(userId);
+        user.HashedPassword = newHash;
+
+        await _database.SaveChangesAsync();
+    }
 }

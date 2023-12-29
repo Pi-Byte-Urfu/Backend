@@ -30,4 +30,12 @@ public class UserController
         var authResponseDto = await _userService.Register(user);
         return Results.Ok(authResponseDto);
     }
+
+    [HttpPost]
+    [Route("change-password")]
+    public async Task<IResult> ChangePassword([FromHeader] UserAuthInfo authInfo, string oldPassword, string newPassword)
+    {
+        await _userService.ChangePassword(authInfo.Id, oldPassword, newPassword);
+        return Results.Ok();
+    }
 }
