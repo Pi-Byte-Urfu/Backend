@@ -3,11 +3,18 @@ using Backend.Auth.Logic.Interfaces;
 
 namespace Backend.Auth.Logic;
 
+/// <summary>
+/// Provides encryption and decryption services using the AES algorithm.
+/// </summary>
 public class EncryptionService : IEncryptionService
 {
     private byte[] _key { get; set; }
     private byte[] _iv { get; set; }
 
+    /// <summary>
+    /// Initializes a new instance of the EncryptionService class with the specified configuration.
+    /// </summary>
+    /// <param name="configuration">The configuration object containing the encryption settings.</param>
     public EncryptionService(IConfiguration configuration)
     {
         var aesSettings = GetAesSettingsFromConfig(configuration);
@@ -24,6 +31,11 @@ public class EncryptionService : IEncryptionService
         };
     }
 
+    /// <summary>
+    /// Encrypts the specified plain text using the AES algorithm.
+    /// </summary>
+    /// <param name="plainText">The plain text to encrypt.</param>
+    /// <returns>The encrypted cipher text.</returns>
     public string EncryptString(string plainText)
     {
         using Aes aesAlg = Aes.Create();
@@ -43,6 +55,11 @@ public class EncryptionService : IEncryptionService
         return Convert.ToBase64String(msEncrypt.ToArray());
     }
 
+    /// <summary>
+    /// Decrypts the specified cipher text using the AES algorithm.
+    /// </summary>
+    /// <param name="cipherText">The cipher text to decrypt.</param>
+    /// <returns>The decrypted plain text.</returns>
     public string DecryptString(string cipherText)
     {
         var cipherBytes = Convert.FromBase64String(cipherText);
