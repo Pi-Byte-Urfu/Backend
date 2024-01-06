@@ -6,4 +6,5 @@ namespace Backend.Courses.Dal.Interfaces;
 public interface IGroupRepo : IBaseRepo<GroupModel>
 {
     public Task<GroupModel> GetGroupByGuidAsync(string groupGuid);
+    public Task<List<GroupModel>> GetAllTeacherGroupsAsync(int teacherId);
 }

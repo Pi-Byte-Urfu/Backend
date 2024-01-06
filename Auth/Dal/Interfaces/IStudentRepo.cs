@@ -5,5 +5,5 @@ namespace Backend.Auth.Dal.Interfaces;
 
 public interface IStudentRepo : IBaseRepo<StudentModel>
 {
-
+    public Task<StudentModel> GetStudentByUserId(int userId);
 }

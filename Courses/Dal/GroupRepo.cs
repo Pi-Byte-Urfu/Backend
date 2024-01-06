@@ -14,6 +14,11 @@ public class GroupRepo : BaseRepo<GroupModel>, IGroupRepo
         _database = database;
     }
 
+    public async Task<List<GroupModel>> GetAllTeacherGroupsAsync(int teacherId)
+    {
+        return await table.Where(group => group.TeacherId == teacherId).ToListAsync();
+    }
+
     public async Task<GroupModel> GetGroupByGuidAsync(string groupGuid)
     {
         return await table.FirstOrDefaultAsync(group => group.AddGuid == groupGuid);
