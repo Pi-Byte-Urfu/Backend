@@ -4,6 +4,8 @@ using Backend.Courses.Dal.Interfaces;
 using Backend.Courses.Dal.Models;
 using Backend.Courses.Dto;
 
+using Microsoft.AspNetCore.Mvc;
+
 namespace Backend.Courses.Logic;
 
 public class GroupService
@@ -13,6 +15,7 @@ public class GroupService
     private IStudentRepo _studentRepo;
     private ITeacherRepo _teacherRepo;
     private IAccountRepo _accountRepo;
+    private IGroupCoursesRepo _groupCoursesRepo;
 
     private IHttpContextAccessor _httpContextAccessor;
 
@@ -22,6 +25,7 @@ public class GroupService
         IStudentRepo studentRepo,
         ITeacherRepo teacherRepo,
         IAccountRepo accountRepo,
+        IGroupCoursesRepo groupCoursesRepo,
         IHttpContextAccessor httpContextAccessor)
     {
         _groupRepo = groupRepo;
@@ -29,6 +33,7 @@ public class GroupService
         _studentRepo = studentRepo;
         _teacherRepo = teacherRepo;
         _accountRepo = accountRepo;
+        _groupCoursesRepo = groupCoursesRepo;
 
         _httpContextAccessor = httpContextAccessor;
     }
@@ -102,6 +107,19 @@ public class GroupService
 
         var id = await _groupRepo.CreateEntityAsync(newGroup);
         return id;
+    }
+
+    public async Task AddCourseToGroupAsync(int groupId, GroupAddCourseToGroupDto groupAddCourseToGroupDto)
+    {
+        var courseId = groupAddCourseToGroupDto.CourseId;
+
+        var groupCourseModel = new GroupCoursesModel()
+        {
+            CourseId = courseId,
+            GroupId = groupId,
+        };
+
+        var id = await _groupCoursesRepo.CreateEntityAsync(groupCourseModel);
     }
 
     public async Task DeleteGroupByIdAsync(int id)

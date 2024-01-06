@@ -50,3 +50,8 @@ public class GroupUpdateDto : BaseUpdateDto<GroupModel>
         return entityToUpdate;
     }
 }
+
+public class GroupAddCourseToGroupDto
+{
+    public int CourseId { get; set; }
+}
