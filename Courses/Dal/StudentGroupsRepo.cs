@@ -13,6 +13,11 @@ public class StudentGroupsRepo : BaseRepo<StudentGroupsModel>, IStudentGroupsRep
 
     }
 
+    public async Task<List<int>> GetAllStudentIdsByGroupIdAsync(int groupId)
+    {
+        return await table.Where(studentConnection => studentConnection.GroupId == groupId).Select(studentConnection => studentConnection.StudentId).ToListAsync();
+    }
+
     public async Task<StudentGroupsModel?> GetStudentGroupByUserAndGroupIdAsync(int studentId, int groupId)
     {
         return await table.Where(connection => connection.StudentId == studentId && connection.GroupId == groupId).FirstOrDefaultAsync();

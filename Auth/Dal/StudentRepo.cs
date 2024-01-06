@@ -17,5 +17,10 @@ namespace Backend.Auth.Dal
         {
             return await table.Where(student => student.UserId == userId).FirstOrDefaultAsync();
         }
+
+        public async Task<int> GetUserIdByStudentId(int studentId)
+        {
+            return await table.Where(student => student.Id == studentId).Select(student => student.UserId).FirstOrDefaultAsync();
+        }
     }
 }

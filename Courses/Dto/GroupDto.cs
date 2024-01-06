@@ -21,6 +21,23 @@ public class GroupConnectDto : BaseDto
     public int GroupId { get; set; }
 }
 
+public class GroupStudentsGetAllResponseDto : BaseDto
+{
+    public class StudentDto
+    {
+        public int UserId { get; set; }
+        public int StudentId { get; set; }
+
+        public string StudentName { get; set; }
+        public string StudentSurname { get; set; }
+        public string StudentPatronymic { get; set; }
+
+        public string StudentPhoto { get; set; }
+    }
+
+    public List<StudentDto> Students { get; set; }
+}
+
 public class GroupUpdateDto : BaseUpdateDto<GroupModel>
 {
     public string GroupName { get; set; }

@@ -108,6 +108,7 @@ namespace Backend.Auth.Logic
         {
             var context = _httpContextAccessor.HttpContext;
             var protocolString = context.Request.IsHttps ? "https" : "http";
+
             return new AccountGetDto()
             {
                 Id = account.Id,

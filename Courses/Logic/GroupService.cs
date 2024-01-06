@@ -1,12 +1,8 @@
-﻿using System.Text.RegularExpressions;
-
-using Backend.Auth.Dal.Interfaces;
+﻿using Backend.Auth.Dal.Interfaces;
 using Backend.Auth.Dto;
 using Backend.Courses.Dal.Interfaces;
 using Backend.Courses.Dal.Models;
 using Backend.Courses.Dto;
-
-using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Courses.Logic;
 
@@ -16,17 +12,25 @@ public class GroupService
     private IStudentGroupsRepo _studentGroupsRepo;
     private IStudentRepo _studentRepo;
     private ITeacherRepo _teacherRepo;
+    private IAccountRepo _accountRepo;
+
+    private IHttpContextAccessor _httpContextAccessor;
 
     public GroupService(
         IGroupRepo groupRepo,
         IStudentGroupsRepo studentGroupsRepo,
         IStudentRepo studentRepo,
-        ITeacherRepo teacherRepo)
+        ITeacherRepo teacherRepo,
+        IAccountRepo accountRepo,
+        IHttpContextAccessor httpContextAccessor)
     {
         _groupRepo = groupRepo;
         _studentGroupsRepo = studentGroupsRepo;
         _studentRepo = studentRepo;
         _teacherRepo = teacherRepo;
+        _accountRepo = accountRepo;
+
+        _httpContextAccessor = httpContextAccessor;
     }
 
     public async Task<GroupGetDto> GetGroupByIdAsync(int id)
@@ -46,6 +50,45 @@ public class GroupService
         var teacherId = await GetTeacherIdByUserIdAsync(userId);
         var allGroups = await _groupRepo.GetAllTeacherGroupsAsync(teacherId);
         return allGroups.Select(MapGroupToGetDto).ToList();
+    }
+
+    public async Task<GroupStudentsGetAllResponseDto> GetAllStudentsByGroupIdAsync(int groupId)
+    {
+        var studentIds = await _studentGroupsRepo.GetAllStudentIdsByGroupIdAsync(groupId);
+        var studentToUserIdDict = await GetStudentIdToUserIdDictionary(studentIds);
+
+        var studentsList = new List<GroupStudentsGetAllResponseDto.StudentDto>();
+
+        var context = _httpContextAccessor.HttpContext;
+        var protocolString = context.Request.IsHttps ? "https" : "http";
+
+        foreach (var studentToUserIdDictPair in studentToUserIdDict)
+        {
+            var studentId = studentToUserIdDictPair.Key;
+            var userId = studentToUserIdDictPair.Value;
+
+            var account = await _accountRepo.GetAccountByUserIdAsync(userId);
+            var studentDto = new GroupStudentsGetAllResponseDto.StudentDto() {
+                UserId = userId,
+                StudentId = studentId,
+                StudentName = account.Name,
+                StudentSurname = account.Surname,
+                StudentPatronymic = account.Patronymic,
+                StudentPhoto = $"{protocolString}://{context.Request.Host}/api/v1/accounts/{account.Id}/photo"
+            };
+            studentsList.Add(studentDto);
+        }
+
+        return new GroupStudentsGetAllResponseDto() { Students = studentsList };
+    }
+
+    public async Task<Dictionary<int, int>> GetStudentIdToUserIdDictionary(List<int> studentIds)
+    {
+        var matchDict = new Dictionary<int, int>();
+        foreach(int studentId in studentIds)
+            matchDict.Add(studentId, await _studentRepo.GetUserIdByStudentId(studentId));
+
+        return matchDict;
     }
 
     public async Task<int> CreateGroupAsync(GroupCreateDto createGroupDto)
