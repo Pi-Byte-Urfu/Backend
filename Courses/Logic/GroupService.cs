@@ -1,4 +1,6 @@
-﻿using Backend.Auth.Dal.Interfaces;
+﻿using System.Text.RegularExpressions;
+
+using Backend.Auth.Dal.Interfaces;
 using Backend.Auth.Dto;
 using Backend.Courses.Dal.Interfaces;
 using Backend.Courses.Dal.Models;
@@ -13,12 +15,18 @@ public class GroupService
     private IGroupRepo _groupRepo;
     private IStudentGroupsRepo _studentGroupsRepo;
     private IStudentRepo _studentRepo;
+    private ITeacherRepo _teacherRepo;
 
-    public GroupService(IGroupRepo groupRepo, IStudentGroupsRepo studentGroupsRepo, IStudentRepo studentRepo)
+    public GroupService(
+        IGroupRepo groupRepo,
+        IStudentGroupsRepo studentGroupsRepo,
+        IStudentRepo studentRepo,
+        ITeacherRepo teacherRepo)
     {
         _groupRepo = groupRepo;
         _studentGroupsRepo = studentGroupsRepo;
         _studentRepo = studentRepo;
+        _teacherRepo = teacherRepo;
     }
 
     public async Task<GroupGetDto> GetGroupByIdAsync(int id)
@@ -33,13 +41,20 @@ public class GroupService
         return groups.Select(MapGroupToGetDto).ToList();
     }
 
+    public async Task<List<GroupGetDto>> GetAllGroupsByTeacherUserIdAsync(int userId)
+    {
+        var teacherId = await GetTeacherIdByUserIdAsync(userId);
+        var allGroups = await _groupRepo.GetAllTeacherGroupsAsync(teacherId);
+        return allGroups.Select(MapGroupToGetDto).ToList();
+    }
+
     public async Task<int> CreateGroupAsync(GroupCreateDto createGroupDto)
     {
         var newGroup = new GroupModel()
         {
             GroupName = createGroupDto.GroupName,
             AddGuid = Guid.NewGuid().ToString(),
-            TeacherId = createGroupDto.TeacherId,
+            TeacherId = await GetTeacherIdByUserIdAsync(createGroupDto.UserId),
         };
 
         var id = await _groupRepo.CreateEntityAsync(newGroup);
@@ -88,6 +103,15 @@ public class GroupService
             throw new BadHttpRequestException(statusCode: 400, message: "Такого ученика не существует");
 
         return student.Id;
+    }
+
+    public async Task<int> GetTeacherIdByUserIdAsync(int userId)
+    {
+        var teacher = await _teacherRepo.GetTeacherByUserId(userId);
+        if (teacher is null)
+            throw new BadHttpRequestException(statusCode: 400, message: "Такого учителя не существует");
+
+        return teacher.Id;
     }
 
     public async Task<bool> IsStudentAlreadyInGroupAsync(int userId, int groupId)

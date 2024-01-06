@@ -42,6 +42,13 @@ public class GroupController
         return await _groupService.GetAllGroupsAsync();
     }
 
+    [HttpGet]
+    [Route(template: "teachers/{userId}")]
+    public async Task<List<GroupGetDto>> GetAllGroupsByTeacherUserId([FromRoute] int userId)
+    {
+        return await _groupService.GetAllGroupsByTeacherUserIdAsync(userId);
+    }
+
     [HttpPost]
     public async Task<BaseIdDto> CreateGroup([FromBody] GroupCreateDto createGroupDto)
     {

@@ -13,7 +13,7 @@ public class GroupGetDto : BaseDto
 public class GroupCreateDto : BaseDto
 {
     public string GroupName { get; set; }
-    public int TeacherId { get; set; }
+    public int UserId { get; set; }
 }
 
 public class GroupConnectDto : BaseDto
