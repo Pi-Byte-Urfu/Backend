@@ -1,4 +1,5 @@
-﻿using Backend.Base.Dto;
+﻿using Backend.Auth.Dto;
+using Backend.Base.Dto;
 using Backend.Courses.Dto;
 using Backend.Courses.Logic;
 using Microsoft.AspNetCore.Mvc;
@@ -19,9 +20,12 @@ public class GroupController
 
     [HttpPost]
     [Route("connect")]
-    public async Task<IResult> ConnectToGroup([FromBody] GroupConnectDto connectToGroupDto)
+    public async Task<IResult> ConnectToGroup([FromHeader] UserAuthInfo authInfo, [FromBody] GroupConnectDto connectToGroupDto)
     {
-        await _groupService.ConnectToGroupAsync(connectToGroupDto);
+        if (authInfo is null)
+            throw new BadHttpRequestException(statusCode: 401, message: "Авторизуйтесь прежде, чем добавляться в группу");
+
+        await _groupService.ConnectToGroupAsync(authInfo, connectToGroupDto);
         return Results.Ok();
     }
 

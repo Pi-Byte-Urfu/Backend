@@ -5,6 +5,7 @@ namespace Backend.Courses.Dto;
 
 public class GroupGetDto : BaseDto
 {
+    public int Id { get; set; }
     public string GroupName { get; set; }
     public int TeacherId { get; set; }
 }
@@ -17,8 +18,7 @@ public class GroupCreateDto : BaseDto
 
 public class GroupConnectDto : BaseDto
 {
-    public int StudentId { get; set; }
-    public string Guid { get; set; }
+    public int GroupId { get; set; }
 }
 
 public class GroupUpdateDto : BaseUpdateDto<GroupModel>

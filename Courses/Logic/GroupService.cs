@@ -1,16 +1,24 @@
-﻿using Backend.Courses.Dal.Interfaces;
+﻿using Backend.Auth.Dal.Interfaces;
+using Backend.Auth.Dto;
+using Backend.Courses.Dal.Interfaces;
 using Backend.Courses.Dal.Models;
 using Backend.Courses.Dto;
+
+using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Courses.Logic;
 
 public class GroupService
 {
     private IGroupRepo _groupRepo;
+    private IStudentGroupsRepo _studentGroupsRepo;
+    private IStudentRepo _studentRepo;
 
-    public GroupService(IGroupRepo groupRepo)
+    public GroupService(IGroupRepo groupRepo, IStudentGroupsRepo studentGroupsRepo, IStudentRepo studentRepo)
     {
         _groupRepo = groupRepo;
+        _studentGroupsRepo = studentGroupsRepo;
+        _studentRepo = studentRepo;
     }
 
     public async Task<GroupGetDto> GetGroupByIdAsync(int id)
@@ -48,19 +56,54 @@ public class GroupService
         await _groupRepo.UpdateEntityAsync(id, updateGroupDto);
     }
 
-    public async Task ConnectToGroupAsync(GroupConnectDto connectToGroupDto)
+    public async Task ConnectToGroupAsync(UserAuthInfo authInfo, GroupConnectDto connectToGroupDto)
     {
-        // TODO: Add check if studen already in group
-        // TODO: Add connecting with new system
+        var accountType = authInfo.UserType;
+        if (accountType is not Auth.Enums.UserType.Student)
+            throw new BadHttpRequestException(statusCode: 400, message: "Добавляться в группы могут только ученики");
+
+        var userId = authInfo.Id;
+        var groupId = connectToGroupDto.GroupId;
+        await AddStudentToGroupAsync(userId, groupId);
+    }
+
+    public async Task AddStudentToGroupAsync(int userId, int groupId)
+    {
+        if (await IsStudentAlreadyInGroupAsync(userId, groupId))
+            throw new BadHttpRequestException(statusCode: 400, message: "Вы уже есть в этой группе");
+
+        var newConnectionModel = new StudentGroupsModel()
+        {
+            GroupId = groupId,
+            StudentId = await GetStudentIdByUserIdAsync(userId),
+        };
+
+        await _studentGroupsRepo.CreateEntityAsync(newConnectionModel);
+    }
+
+    public async Task<int> GetStudentIdByUserIdAsync(int userId)
+    {
+        var student = await _studentRepo.GetStudentByUserId(userId);
+        if (student is null)
+            throw new BadHttpRequestException(statusCode: 400, message: "Такого ученика не существует");
+
+        return student.Id;
+    }
+
+    public async Task<bool> IsStudentAlreadyInGroupAsync(int userId, int groupId)
+    {
+        var studentId = await GetStudentIdByUserIdAsync(userId);
+        var studentGroupConnection = await _studentGroupsRepo.GetStudentGroupByUserAndGroupIdAsync(studentId, groupId);
+        return studentGroupConnection is not null;
     }
 
     // TODO: Make deleting student from gorup
-    // TODO: Make regenerating GUID (link)
 
     private GroupGetDto MapGroupToGetDto(GroupModel group)
     {
         return new GroupGetDto()
         {
+            Id = group.Id,
             GroupName = group.GroupName,
             TeacherId = group.TeacherId,
         };
