@@ -3,6 +3,8 @@ using Backend.Courses.Dal.Interfaces;
 using Backend.Courses.Dal.Models;
 using Backend.Base.Services.Interfaces;
 using Backend.Base.Services;
+using Backend.Auth.Dto;
+using Backend.Auth.Dal.Interfaces;
 
 namespace Backend.Courses.Logic;
 
@@ -10,13 +12,31 @@ public class CourseService
 {
     private ICourseRepo _courseRepo;
     private ICourseChaptersRepo _courseChaptersRepo;
+    private IStudentRepo _studentRepo;
+    private IStudentGroupsRepo _studentGroupsRepo;
+    private IGroupRepo _groupRepo;
+    private IGroupCoursesRepo _groupCoursesRepo;
+
     private IFileManager _fileManager;
     private IHttpContextAccessor _httpContextAccessor;
 
-    public CourseService(ICourseRepo courseRepo, ICourseChaptersRepo courseChaptersRepo, IFileManager fileManager, IHttpContextAccessor httpContextAccessor)
+    public CourseService(
+        ICourseRepo courseRepo,
+        ICourseChaptersRepo courseChaptersRepo,
+        IStudentRepo studentRepo,
+        IStudentGroupsRepo studentGroupsRepo,
+        IGroupRepo groupRepo,
+        IGroupCoursesRepo groupCoursesRepo,
+        IFileManager fileManager,
+        IHttpContextAccessor httpContextAccessor)
     {
         _courseRepo = courseRepo;
         _courseChaptersRepo = courseChaptersRepo;
+        _studentRepo = studentRepo;
+        _studentGroupsRepo = studentGroupsRepo;
+        _groupRepo = groupRepo;
+        _groupCoursesRepo = groupCoursesRepo;
+
         _fileManager = fileManager;
         _httpContextAccessor = httpContextAccessor;
     }
@@ -31,6 +51,15 @@ public class CourseService
     public async Task<CourseGetAllDto> GetAllCoursesAsync()
     {
         var courses = await _courseRepo.GetAllEntitiesAsync();
+        return MapCoursesToGetAllDto(courses);
+    }
+
+    public async Task<CourseGetAllDto> GetAllUserCoursesByUserIdAsync(UserAuthInfo authInfo)
+    {
+        var courses = authInfo.UserType == Auth.Enums.UserType.Teacher
+            ? await GetAllTeacherCoursesByUserIdAsync(authInfo.Id)
+            : await GetCoursesOfAllGroups(await GetAllStudentGroupsByUserIdAsync(authInfo.Id));
+
         return MapCoursesToGetAllDto(courses);
     }
 
@@ -55,6 +84,40 @@ public class CourseService
     public async Task UpdateCourseAsync(int id, CourseUpdateDto courseUpdateDto)
     {
         await _courseRepo.UpdateEntityAsync(id, courseUpdateDto);
+    }
+
+    private async Task<List<GroupModel>> GetAllStudentGroupsByUserIdAsync(int userId)
+    {
+        var student = await _studentRepo.GetStudentByUserId(userId);
+        var studentGroupsIds = await _studentGroupsRepo.GetGroupIdsByStudentIdAsync(student.Id);
+
+        var groups = new List<GroupModel>();
+        foreach (var id in studentGroupsIds)
+        {
+            var group = await _groupRepo.GetEntityByIdAsync(id);
+            groups.Add(group);
+        }
+        return groups;
+    }
+
+    private async Task<List<CourseModel>> GetAllTeacherCoursesByUserIdAsync(int userId)
+    {
+        return await _courseRepo.GetAllTeacherCoursesByCreatorId(userId);
+    }
+
+    private async Task<List<CourseModel>> GetCoursesOfAllGroups(List<GroupModel> groups)
+    {
+        var courses = new List<CourseModel>();
+        foreach (var group in groups)
+        {
+            var groupId = group.Id;
+            var courseIds = await _groupCoursesRepo.GetCourseIdsByGroupIdAsync(groupId);
+
+            foreach (int courseId in courseIds)
+                courses.Add(await _courseRepo.GetEntityByIdAsync(courseId));
+        }
+
+        return courses;
     }
 
     private async Task<CourseGetOneDto> MapCourseToGetOneDto(CourseModel courseModel)

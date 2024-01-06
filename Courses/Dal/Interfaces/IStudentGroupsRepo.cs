@@ -7,4 +7,5 @@ public interface IStudentGroupsRepo : IBaseRepo<StudentGroupsModel>
 {
     public Task<StudentGroupsModel?> GetStudentGroupByUserAndGroupIdAsync(int studentId, int groupId);
     public Task<List<int>> GetAllStudentIdsByGroupIdAsync(int groupId);
+    public Task<List<int>> GetGroupIdsByStudentIdAsync(int studentId);
 }

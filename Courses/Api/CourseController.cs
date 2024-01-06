@@ -1,4 +1,5 @@
-﻿using Backend.Base.Dto;
+﻿using Backend.Auth.Dto;
+using Backend.Base.Dto;
 using Backend.Courses.Dto;
 using Backend.Courses.Logic;
 using Microsoft.AspNetCore.Mvc;
@@ -28,6 +29,13 @@ public class CourseController
     public async Task<CourseGetAllDto> GetAllCourses()
     {
         return await _courseService.GetAllCoursesAsync();
+    }
+
+    [HttpGet]
+    [Route(template: "users")]
+    public async Task<CourseGetAllDto> GetAllUserCoursesByUserId([FromHeader] UserAuthInfo authInfo)
+    {
+        return await _courseService.GetAllUserCoursesByUserIdAsync(authInfo);
     }
 
     [HttpPost]
