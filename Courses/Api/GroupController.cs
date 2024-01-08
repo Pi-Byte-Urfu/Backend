@@ -1,5 +1,6 @@
 ﻿using Backend.Auth.Dto;
 using Backend.Base.Dto;
+using Backend.Courses.Dal.Models;
 using Backend.Courses.Dto;
 using Backend.Courses.Logic;
 using Microsoft.AspNetCore.Mvc;
@@ -54,6 +55,13 @@ public class GroupController
     public async Task<GroupStudentsGetAllResponseDto> GetAllStudentsByGroupId([FromRoute] int groupId)
     {
         return await _groupService.GetAllStudentsByGroupIdAsync(groupId);
+    }
+
+    [HttpGet]
+    [Route(template: "{groupId}/courses")]
+    public async Task<CourseGetAllDto> GetGroupCourses([FromRoute] int groupId)
+    {
+        return await _groupService.GetGroupCourses(groupId);
     }
 
     [HttpPost]

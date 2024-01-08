@@ -15,7 +15,10 @@ public class GroupService
     private IStudentRepo _studentRepo;
     private ITeacherRepo _teacherRepo;
     private IAccountRepo _accountRepo;
+    private ICourseRepo _courseRepo;
     private IGroupCoursesRepo _groupCoursesRepo;
+
+    private CourseService _courseService;
 
     private IHttpContextAccessor _httpContextAccessor;
 
@@ -26,6 +29,8 @@ public class GroupService
         ITeacherRepo teacherRepo,
         IAccountRepo accountRepo,
         IGroupCoursesRepo groupCoursesRepo,
+        ICourseRepo courseRepo,
+        CourseService courseService,
         IHttpContextAccessor httpContextAccessor)
     {
         _groupRepo = groupRepo;
@@ -34,6 +39,9 @@ public class GroupService
         _teacherRepo = teacherRepo;
         _accountRepo = accountRepo;
         _groupCoursesRepo = groupCoursesRepo;
+        _courseRepo = courseRepo;
+
+        _courseService = courseService;
 
         _httpContextAccessor = httpContextAccessor;
     }
@@ -141,6 +149,16 @@ public class GroupService
         var userId = authInfo.Id;
         var groupId = connectToGroupDto.GroupId;
         await AddStudentToGroupAsync(userId, groupId);
+    }
+
+    public async Task<CourseGetAllDto> GetGroupCourses(int groupId)
+    {
+        var courseIds = await _groupCoursesRepo.GetCourseIdsByGroupIdAsync(groupId);
+        var courses = new List<CourseModel>();
+        foreach (var courseId in courseIds)
+            courses.Add(await _courseRepo.GetEntityByIdAsync(courseId));
+
+        return _courseService.MapCoursesToGetAllDto(courses);
     }
 
     public async Task AddStudentToGroupAsync(int userId, int groupId)

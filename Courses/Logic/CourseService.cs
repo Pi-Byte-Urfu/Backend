@@ -120,7 +120,7 @@ public class CourseService
         return courses;
     }
 
-    private async Task<CourseGetOneDto> MapCourseToGetOneDto(CourseModel courseModel)
+    public async Task<CourseGetOneDto> MapCourseToGetOneDto(CourseModel courseModel)
     {
         //var courseChapters = await GetChaptersByCourseId(courseModel.Id);
 
@@ -144,7 +144,7 @@ public class CourseService
     //        .ToList();
     //}
 
-    private CourseGetAllDto MapCoursesToGetAllDto(List<CourseModel> courseModels)
+    public CourseGetAllDto MapCoursesToGetAllDto(List<CourseModel> courseModels)
     {
         return new CourseGetAllDto()
         {
@@ -154,7 +154,7 @@ public class CourseService
         };
     }
 
-    private CourseGetAllDto.CourseDto MapCourseToCourseDtoForGetAllDto(CourseModel courseModel)
+    public CourseGetAllDto.CourseDto MapCourseToCourseDtoForGetAllDto(CourseModel courseModel)
     {
         var context = _httpContextAccessor.HttpContext;
         var protocolString = context.Request.IsHttps ? "https" : "http";
