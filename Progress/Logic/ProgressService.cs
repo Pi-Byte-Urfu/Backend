@@ -1,30 +1,37 @@
 ﻿using Backend.Auth.Dto;
 using Backend.Base.Services.Interfaces;
-using Backend.CoursePages.Api;
+using Backend.CoursePages.Dal.Interfaces;
+using Backend.CoursePages.Dal.Models;
 using Backend.CoursePages.Logic;
+using Backend.Courses.Dal.Interfaces;
 using Backend.Courses.Logic;
 using Backend.Progress.Dal.Interfaces;
 using Backend.Progress.Dal.Models;
 using Backend.Progress.Dto;
 
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
 namespace Backend.Progress.Logic;
 
-public class ProgressService
+public class ProgressService(
+    IFileManager fileManager,
+    Md5EditorFilesService md5EditorFilesService,
+    GroupService groupService,
+    ITaskAnswerRepo taskAnswerRepo,
+    ITaskScoreRepo taskScoreRepo,
+    ICourseChaptersRepo courseChaptersRepo,
+    ITaskPageRepo taskPageRepo,
+    ICoursePageRepo coursePageRepo
+    )
 {
-    private IFileManager _fileManager;
-    private Md5EditorFilesService _md5EditorFilesService;
-    private GroupService _groupService;
-    private ITaskAnswerRepo _taskAnswerRepo;
-    private ITaskScoreRepo _taskScoreRepo;
-
-    public ProgressService(IFileManager fileManager, Md5EditorFilesService md5EditorFilesService, GroupService groupService, ITaskAnswerRepo taskAnswerRepo, ITaskScoreRepo taskScoreRepo)
-    {
-        _fileManager = fileManager;
-        _md5EditorFilesService = md5EditorFilesService;
-        _groupService = groupService;
-        _taskAnswerRepo = taskAnswerRepo;
-        _taskScoreRepo = taskScoreRepo;
-    }
+    private IFileManager _fileManager = fileManager;
+    private Md5EditorFilesService _md5EditorFilesService = md5EditorFilesService;
+    private GroupService _groupService = groupService;
+    private ITaskAnswerRepo _taskAnswerRepo = taskAnswerRepo;
+    private ITaskScoreRepo _taskScoreRepo = taskScoreRepo;
+    private ICourseChaptersRepo _courseChaptersRepo = courseChaptersRepo;
+    private ITaskPageRepo _taskPageRepo = taskPageRepo;
+    private readonly ICoursePageRepo _coursePageRepo = coursePageRepo;
 
     public async Task UploadStudentAnswerAsync(UserAuthInfo authInfo, int pageId, ProgressUploadAnswerDto progressUploadAnswerDto)
     {
@@ -58,7 +65,25 @@ public class ProgressService
 
     public async Task<ProgressGetStudentProgressForCourseDto> GetStudentProgressForCourseAsync(int studentUserId, int courseId)
     {
-        throw new NotImplementedException();
+        var studentId = await _groupService.GetStudentIdByUserIdAsync(studentUserId);
+
+        var allStudentScores = (await _taskScoreRepo.GetAllEntitiesAsync()).Where(x => x.StudentId == studentId).ToList();
+        var finalScore = allStudentScores.Sum(x => x.StudentScore);
+
+        var allChaptersOfCourse = (await _courseChaptersRepo.GetAllEntitiesAsync()).Where(x => x.CourseId == courseId).ToList();
+        var allPagesOfAllChapters = new List<CoursePageModel>();
+        foreach (var chapter in allChaptersOfCourse)
+            allPagesOfAllChapters.AddRange((await _coursePageRepo.GetAllEntitiesAsync()).Where(x => x.ChapterId == chapter.Id));
+
+        var maxScoreOfCourse = 0;
+        foreach (var page in allPagesOfAllChapters)
+        {
+            var taskPage = (await _taskPageRepo.GetAllEntitiesAsync()).Where(x => x.PageId == page.Id).FirstOrDefault();
+            if (taskPage is not null)
+                maxScoreOfCourse += taskPage.MaxScore;
+        }
+
+        return new ProgressGetStudentProgressForCourseDto() { Progress = (int)((((decimal)finalScore) / ((decimal)maxScoreOfCourse)) * 100) };
     }
 
     public async Task<ProgressGetTaskAnswersForStudentDto> GetStudentTasksAnswersAsync(int courseId, int studentUserId)
