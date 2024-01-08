@@ -55,3 +55,8 @@ public class GroupAddCourseToGroupDto
 {
     public int CourseId { get; set; }
 }
+
+public class GroupAddManyCoursesToGroupDto
+{
+    public List<GroupAddCourseToGroupDto> Courses { get; set; }
+}

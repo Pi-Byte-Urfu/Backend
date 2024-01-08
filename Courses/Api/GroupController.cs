@@ -72,10 +72,18 @@ public class GroupController
     }
 
     [HttpPost]
-    [Route(template: "{groupId}/courses")]
+    [Route(template: "{groupId}/courses/one")]
     public async Task<IResult> AddCourseToGroup([FromRoute] int groupId, [FromBody] GroupAddCourseToGroupDto groupAddCourseToGroupDto)
     {
         await _groupService.AddCourseToGroupAsync(groupId, groupAddCourseToGroupDto);
+        return Results.Ok();
+    }
+
+    [HttpPost]
+    [Route(template: "{groupId}/courses/many")]
+    public async Task<IResult> AddManyCoursesToGroupAsync([FromRoute] int groupId, [FromBody] GroupAddManyCoursesToGroupDto groupAddManyCoursesToGroupDto)
+    {
+        await _groupService.AddManyCoursesToGroupAsync(groupId, groupAddManyCoursesToGroupDto);
         return Results.Ok();
     }
 

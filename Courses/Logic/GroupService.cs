@@ -130,6 +130,12 @@ public class GroupService
         var id = await _groupCoursesRepo.CreateEntityAsync(groupCourseModel);
     }
 
+    public async Task AddManyCoursesToGroupAsync(int groupId, GroupAddManyCoursesToGroupDto groupAddManyCoursesToGroupDto)
+    {
+        foreach (var course in groupAddManyCoursesToGroupDto.Courses)
+            await AddCourseToGroupAsync(groupId, course);
+    }
+
     public async Task DeleteGroupByIdAsync(int id)
     {
         await _groupRepo.DeleteEntityByIdAsync(id);
