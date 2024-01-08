@@ -79,6 +79,14 @@ public class GroupController
         return Results.Ok();
     }
 
+    [HttpDelete]
+    [Route(template: "{groupId}/courses/one")]
+    public async Task<IResult> DeleteCourseFromGroup([FromRoute] int groupId, [FromBody] GroupAddCourseToGroupDto groupAddCourseToGroupDto)
+    {
+        await _groupService.DeleteCourseFromGroup(groupId, groupAddCourseToGroupDto);
+        return Results.Ok();
+    }
+
     [HttpPost]
     [Route(template: "{groupId}/courses/many")]
     public async Task<IResult> AddManyCoursesToGroupAsync([FromRoute] int groupId, [FromBody] GroupAddManyCoursesToGroupDto groupAddManyCoursesToGroupDto)

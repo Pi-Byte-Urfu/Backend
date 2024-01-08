@@ -157,6 +157,13 @@ public class GroupService
         await AddStudentToGroupAsync(userId, groupId);
     }
 
+    public async Task DeleteCourseFromGroup(int groupId, GroupAddCourseToGroupDto groupAddCourseToGroupDto)
+    {
+        var conn = (await _groupCoursesRepo.GetAllEntitiesAsync()).Where(x => x.GroupId == groupId && x.CourseId == groupAddCourseToGroupDto.CourseId).FirstOrDefault();
+        if (conn is not null)
+            await _groupCoursesRepo.DeleteEntityByIdAsync(conn.Id);
+    }
+
     public async Task<CourseGetAllDto> GetGroupCourses(int groupId)
     {
         var courseIds = await _groupCoursesRepo.GetCourseIdsByGroupIdAsync(groupId);
