@@ -1,6 +1,7 @@
 ﻿using Backend.Auth.Dal.Models;
 using Backend.CoursePages.Dal.Models;
 using Backend.Courses.Dal.Models;
+using Backend.Progress.Dal.Models;
 
 using Microsoft.EntityFrameworkCore;
 
@@ -24,7 +25,7 @@ public class AppDatabase : DbContext
     public DbSet<GroupCoursesModel> GroupCourses { get; set; }
     public DbSet<StudentGroupsModel> StudentGroups { get; set; }
 
-    //CoursePages
+    // CoursePages
     public DbSet<CoursePageModel> CoursePages { get; set; }
     public DbSet<TaskPageModel> TaskPages { get; set; }
     public DbSet<TestPageModel> TestPages { get; set; }
@@ -34,6 +35,10 @@ public class AppDatabase : DbContext
     public DbSet<QuestionOptionModel> QuestionOptions { get; set; }
     public DbSet<TheoryPageModel> TheoryPages { get; set; }
     public DbSet<TestQuestionModel> TestQuestions { get; set; }
+
+    // Progress
+    public DbSet<TaskAnswerModel> TaskAnswers{ get; set; }
+    public DbSet<TaskScoreModel> TaskScores { get; set; }
 
     public AppDatabase(DbContextOptions<AppDatabase> options, IConfiguration config) : base(options)
     {

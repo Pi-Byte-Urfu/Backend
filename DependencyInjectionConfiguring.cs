@@ -12,6 +12,10 @@ using Backend.CoursePages.Logic;
 using Backend.Courses.Dal;
 using Backend.Courses.Dal.Interfaces;
 using Backend.Courses.Logic;
+using Backend.Progress.Dal;
+using Backend.Progress.Dal.Interfaces;
+using Backend.Progress.Logic;
+
 using Microsoft.EntityFrameworkCore;
 using Microsoft.OpenApi.Models;
 
@@ -37,7 +41,7 @@ public class DependencyInjectionConfiguring
         _services.AddHttpContextAccessor();
         _services.AddControllers(options => options.ModelBinderProviders.Insert(0, new CustomDateTimeModelBinderProvider()));
         _services.AddEndpointsApiExplorer();
-        //_services.AddSwaggerGen(options => options.OperationFilter<SwaggerAuthorizationHeaderFilter>());
+        
         _services.AddSwaggerGen(c =>
         {
             c.OperationFilter<SwaggerAuthorizationHeaderFilter>();
@@ -56,6 +60,7 @@ public class DependencyInjectionConfiguring
         RegisterAuthDbRepos();
         RegisterCoursesDbRepos();
         RegisterCoursePagesDbRepos();
+        RegisterProgressDbRepos();
     }
 
     private void RegisterAuthDbRepos()
@@ -90,6 +95,11 @@ public class DependencyInjectionConfiguring
         _services.AddScoped<ITestQuestionRepo, TestQuestionRepo>();
     }
 
+    private void RegisterProgressDbRepos()
+    {
+        _services.AddScoped<ITaskAnswerRepo, TaskAnswerRepo>();
+        _services.AddScoped<ITaskScoreRepo, TaskScoreRepo>();
+    }
 
     private void RegisterBusinessServices()
     {
@@ -97,6 +107,7 @@ public class DependencyInjectionConfiguring
         RegisterAuthLogic();
         RegisterCoursesLogic();
         RegisterCoursePagesLogic();
+        RegisterProgressLogic();
     }
 
     private void RegisterAuthLogic()
@@ -115,6 +126,11 @@ public class DependencyInjectionConfiguring
     private void RegisterCoursePagesLogic()
     {
         _services.AddScoped<CoursePagesService>();
+    }
+
+    private void RegisterProgressLogic()
+    {
+        _services.AddScoped<ProgressService>();
     }
 
     private void RegisterHelperServices()
