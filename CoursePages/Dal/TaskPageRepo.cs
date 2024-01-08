@@ -25,4 +25,12 @@ public class TaskPageRepo : BaseRepo<TaskPageModel>, ITaskPageRepo
 
         await _database.SaveChangesAsync();
     }
+
+    public async Task UpdateScore(int pageId, int maxScore)
+    {
+        var taskPage = await table.Where(taPage => taPage.PageId == pageId).FirstAsync();
+        taskPage.MaxScore = maxScore;
+
+        await _database.SaveChangesAsync();
+    }
 }

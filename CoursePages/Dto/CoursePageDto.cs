@@ -32,6 +32,7 @@ public class CourseTaskPageGetOneDto
 {
     public string Name { get; set; }
     public string Content { get; set; }
+    public int MaxScore { get; set; }
 }
 
 public class CourseTestPageGetOneDto
@@ -59,6 +60,7 @@ public class CourseTaskPageUpdateDto : BaseDto
 {
     public string? Name { get; set; }
     public string? Content { get; set; }
+    public int? MaxScore { get; set; }
 }
 
 public class CourseTestPageUpdateDto : BaseDto

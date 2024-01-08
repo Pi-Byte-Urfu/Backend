@@ -86,6 +86,8 @@ public class CoursePagesService
             await _coursePageRepo.UpdateName(pageId, courseTaskPageUpdate.Name);
         if (courseTaskPageUpdate.Content is not null)
             await _taskPageRepo.UpdateContent(pageId, courseTaskPageUpdate.Content);
+        if (courseTaskPageUpdate.MaxScore is not null)
+            await _taskPageRepo.UpdateScore(pageId, (int)courseTaskPageUpdate.MaxScore);
     }
 
     public async Task UpdateTestPage(int pageId, CourseTestPageUpdateDto courseTestPageUpdate)
@@ -172,6 +174,7 @@ public class CoursePagesService
             {
                 Content = "",
                 PageId = pageId,
+                MaxScore = 0,
             });
         }
         else
@@ -203,6 +206,6 @@ public class CoursePagesService
 
     private CourseTaskPageGetOneDto MapTaskPageToDto(CoursePageModel baseModel, TaskPageModel taskPageModel)
     {
-        return new CourseTaskPageGetOneDto() { Content = taskPageModel.Content, Name = baseModel.Name };
+        return new CourseTaskPageGetOneDto() { Content = taskPageModel.Content, Name = baseModel.Name, MaxScore = taskPageModel.MaxScore };
     }
 }
