@@ -88,6 +88,79 @@ public class ProgressService(
 
     public async Task<ProgressGetTaskAnswersForStudentDto> GetStudentTasksAnswersAsync(int courseId, int studentUserId)
     {
-        throw new NotImplementedException();
+        var studentId = await _groupService.GetStudentIdByUserIdAsync(studentUserId);
+        var allAnswers = (await _taskAnswerRepo.GetAllEntitiesAsync()).Where(x => x.StudentId == studentId).ToList();
+
+        var allDtos = new List<ProgressGetTaskAnswersForStudentDto.OneTaskAnswerDto>();
+        foreach (var taskAnswer in allAnswers)
+            allDtos.Add(await GetOneAnswerTaskDto(taskAnswer));
+
+        return new ProgressGetTaskAnswersForStudentDto() { Answers = allDtos};
+    }
+
+    private async Task<ProgressGetTaskAnswersForStudentDto.OneTaskAnswerDto> GetOneAnswerTaskDto(TaskAnswerModel taskAnswer)
+    {
+        var chapterInfo = await GetTaskAnswerChapterInfo(taskAnswer);
+        var pageInfo = await GetTaskAnswerPageInfo(taskAnswer);
+
+        return new ProgressGetTaskAnswersForStudentDto.OneTaskAnswerDto()
+        {
+            ChapterId = chapterInfo.ChapterId,
+            ChapterName = chapterInfo.ChapterName,
+
+            PageId = pageInfo.PageId,
+            PageName = pageInfo.PageName,
+
+            StudentScore = await GetStudentTaskScore(taskAnswer),
+            MaxScore = await GetTaskMaxScore(taskAnswer),
+
+            FileUrl = taskAnswer.FileUrl,
+        };
+    }
+
+    internal class ChapterInfo
+    {
+        public int ChapterId { get; set; }
+        public string ChapterName { get; set; }
+    }
+
+    private async Task<ChapterInfo> GetTaskAnswerChapterInfo(TaskAnswerModel taskAnswer)
+    {
+        var pageId = taskAnswer.PageId;
+        var page = await _coursePageRepo.GetEntityByIdAsync(pageId);
+
+        var chapter = await _courseChaptersRepo.GetEntityByIdAsync(page.ChapterId);
+
+        return new ChapterInfo { ChapterId = pageId, ChapterName = chapter.Name };
+    }
+
+    internal class PageInfo
+    {              
+        public int PageId { get; set; }
+        public string PageName { get; set; }
+    }
+
+    private async Task<PageInfo> GetTaskAnswerPageInfo(TaskAnswerModel taskAnswer)
+    {
+        var pageId = taskAnswer.PageId;
+        var page = await _coursePageRepo.GetEntityByIdAsync(pageId);
+
+        return new PageInfo { PageId = pageId, PageName = page.Name };
+    }
+
+    private async Task<int> GetStudentTaskScore(TaskAnswerModel taskAnswer)
+    {
+        return (await _taskScoreRepo.GetAllEntitiesAsync())
+            .Where(x => x.StudentId == taskAnswer.StudentId && x.PageId == taskAnswer.PageId)
+            .FirstOrDefault()
+            ?.StudentScore ?? 0;
+    }
+
+    private async Task<int> GetTaskMaxScore(TaskAnswerModel taskAnswer)
+    {
+        return (await _taskPageRepo.GetAllEntitiesAsync())
+            .Where(x => x.PageId == taskAnswer.PageId)
+            .First()
+            .MaxScore;
     }
 }
