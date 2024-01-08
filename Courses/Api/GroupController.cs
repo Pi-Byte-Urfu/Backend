@@ -80,8 +80,8 @@ public class GroupController
     }
 
     [HttpDelete]
-    [Route(template: "{groupId}/courses/one")]
-    public async Task<IResult> DeleteCourseFromGroup([FromRoute] int groupId, [FromBody] GroupAddCourseToGroupDto groupAddCourseToGroupDto)
+    [Route(template: "{groupId}/courses/{CourseId}")]
+    public async Task<IResult> DeleteCourseFromGroup([FromRoute] int groupId, [FromRoute] GroupAddCourseToGroupDto groupAddCourseToGroupDto)
     {
         await _groupService.DeleteCourseFromGroup(groupId, groupAddCourseToGroupDto);
         return Results.Ok();
