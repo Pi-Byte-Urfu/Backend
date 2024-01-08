@@ -1,6 +1,7 @@
 ﻿using Backend.Base.Services;
 using Backend.Base.Services.Interfaces;
 using Backend.CoursePages.Dto;
+using Backend.CoursePages.Logic;
 
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,23 +11,18 @@ namespace Backend.CoursePages.Api;
 [Route("/api/v1/editor")]
 public class Md5EditorFilesController
 {
-    private IFileManager _fileManager;
-    private IHttpContextAccessor _httpContextAccessor;
+    private Md5EditorFilesService _md5EditorFilesService;
 
-    public Md5EditorFilesController(IFileManager fileManager, IHttpContextAccessor httpContextAccessor)
+    public Md5EditorFilesController(Md5EditorFilesService md5EditorFilesService)
     {
-        _fileManager = fileManager;
-        _httpContextAccessor = httpContextAccessor;
+        _md5EditorFilesService = md5EditorFilesService;    
     }
 
     [HttpGet]
     [Route("photos/{photoGuid}")]
     public async Task<IResult> GetPhoto([FromRoute] string photoGuid)
     {
-        var directoryToFile = StaticFilesManager.GetFileDirectoryPath(Base.Enums.FileType.Photo);
-        var pathToFile = Path.Combine(directoryToFile, photoGuid);
-
-        var fileBytes = await _fileManager.GetFileBytesAsync(pathToFile, Base.Enums.FileType.Photo);
+        var fileBytes = await _md5EditorFilesService.GetPhotoBytes(photoGuid);
         return Results.File(fileContents: fileBytes, contentType: "image/png");
     }
 
@@ -34,10 +30,7 @@ public class Md5EditorFilesController
     [Route("documents/{fileGuid}")]
     public async Task<IResult> GetFile([FromRoute] string fileGuid)
     {
-        var directoryToFile = StaticFilesManager.GetFileDirectoryPath(Base.Enums.FileType.Document);
-        var pathToFile = Path.Combine(directoryToFile, fileGuid);
-
-        var fileBytes = await _fileManager.GetFileBytesAsync(pathToFile, Base.Enums.FileType.Document);
+        var fileBytes = await _md5EditorFilesService.GetFileBytes(fileGuid);
         return Results.File(fileContents: fileBytes, contentType: "application/octet-stream");
     }
 
@@ -45,31 +38,13 @@ public class Md5EditorFilesController
     [Route("photos")]
     public async Task<UrlToGetFileDto> UploadPhoto([FromForm] Md5EditorUploadFileDto fileDto)
     {
-        var file = fileDto.FormFile;
-        var pathWhereSaved = await _fileManager.UploadFileAsync(file, Base.Enums.FileType.Photo);
-        var fileGuid = GetGuidFromFilePath(pathWhereSaved);
-
-        var context = _httpContextAccessor.HttpContext;
-        var protocolString = context.Request.IsHttps ? "https" : "http";
-        var urlToGetFile = $"{protocolString}://{context.Request.Host}/api/v1/editor/photos/{fileGuid}";
-
-        return new UrlToGetFileDto { UrlToGet =  urlToGetFile };
+        return await _md5EditorFilesService.UploadPhoto(fileDto);
     }
 
     [HttpPost]
     [Route("documents")]
     public async Task<UrlToGetFileDto> UploadFile([FromForm] Md5EditorUploadFileDto fileDto)
     {
-        var file = fileDto.FormFile;
-        var pathWhereSaved = await _fileManager.UploadFileAsync(file, Base.Enums.FileType.Document);
-        var fileGuid = GetGuidFromFilePath(pathWhereSaved);
-
-        var context = _httpContextAccessor.HttpContext;
-        var protocolString = context.Request.IsHttps ? "https" : "http";
-        var urlToGetFile = $"{protocolString}://{context.Request.Host}/api/v1/editor/documents/{fileGuid}";
-
-        return new UrlToGetFileDto { UrlToGet = urlToGetFile };
+        return await _md5EditorFilesService.UploadFile(fileDto);
     }
-
-    private string GetGuidFromFilePath(string filePath) => filePath.Split(['/', '\\']).Last();
 }

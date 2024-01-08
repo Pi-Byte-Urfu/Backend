@@ -126,6 +126,7 @@ public class DependencyInjectionConfiguring
     private void RegisterCoursePagesLogic()
     {
         _services.AddScoped<CoursePagesService>();
+        _services.AddScoped<Md5EditorFilesService>();
     }
 
     private void RegisterProgressLogic()
