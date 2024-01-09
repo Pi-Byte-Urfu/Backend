@@ -84,7 +84,10 @@ public class ProgressService(
                 maxScoreOfCourse += taskPage.MaxScore;
         }
 
-        return new ProgressGetStudentProgressForCourseDto() { Progress = (int)((((decimal)finalScore) / ((decimal)maxScoreOfCourse)) * 100) };
+        if (maxScoreOfCourse == 0)
+            return new ProgressGetStudentProgressForCourseDto() { Progress = 0 };
+
+        return new ProgressGetStudentProgressForCourseDto() { Progress = (int)(finalScore / ((decimal)maxScoreOfCourse) * 100) };
     }
 
     public async Task<ProgressGetTaskAnswersForStudentDto> GetStudentTasksAnswersAsync(int courseId, int studentUserId)
@@ -132,7 +135,7 @@ public class ProgressService(
 
         var chapter = await _courseChaptersRepo.GetEntityByIdAsync(page.ChapterId);
 
-        return new ChapterInfo { ChapterId = pageId, ChapterName = chapter.Name };
+        return new ChapterInfo { ChapterId = chapter.Id, ChapterName = chapter.Name };
     }
 
     internal class PageInfo
