@@ -33,7 +33,7 @@ public class ProgressService(
     private ITaskPageRepo _taskPageRepo = taskPageRepo;
     private readonly ICoursePageRepo _coursePageRepo = coursePageRepo;
 
-    public async Task UploadStudentAnswerAsync(UserAuthInfo authInfo, int pageId, ProgressUploadAnswerDto progressUploadAnswerDto)
+    public async Task<string> UploadStudentAnswerAsync(UserAuthInfo authInfo, int pageId, ProgressUploadAnswerDto progressUploadAnswerDto)
     {
         if (authInfo.UserType is not Auth.Enums.UserType.Student)
             throw new BadHttpRequestException(statusCode: 400, message: "Только ученики могут отвечать на задания");
@@ -49,6 +49,7 @@ public class ProgressService(
             await _taskAnswerRepo.DeleteEntityByIdAsync(studentAnswer.Id);
 
         var id = await _taskAnswerRepo.CreateEntityAsync(studentAnswerObject);
+        return url;
     }
 
     public async Task RateStudentAnswerAsync(int pageId, int studentUserId, ProgressRateAnswerDto rateAnswerDto)

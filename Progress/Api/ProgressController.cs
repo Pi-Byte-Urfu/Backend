@@ -21,8 +21,8 @@ public class ProgressController
     [Route("answer/{pageId}")]
     public async Task<IResult> UploadStudentAnswer([FromHeader] UserAuthInfo authInfo, [FromRoute] int pageId, [FromForm] ProgressUploadAnswerDto uploadAnswerDto)
     {
-        await _progressService.UploadStudentAnswerAsync(authInfo, pageId, uploadAnswerDto);
-        return Results.Ok();
+        var url = await _progressService.UploadStudentAnswerAsync(authInfo, pageId, uploadAnswerDto);
+        return Results.Ok(url);
     }
 
     [HttpPost]

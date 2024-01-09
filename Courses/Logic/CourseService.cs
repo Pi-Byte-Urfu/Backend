@@ -89,7 +89,23 @@ public class CourseService
     private async Task<List<GroupModel>> GetAllStudentGroupsByUserIdAsync(int userId)
     {
         var student = await _studentRepo.GetStudentByUserId(userId);
-        var studentGroupsIds = await _studentGroupsRepo.GetGroupIdsByStudentIdAsync(student.Id);
+        if (student is null)
+            throw new BadHttpRequestException(statusCode: 400, message: "Вы не авторизованы");
+
+        List<int> studentGroupsIds;
+        try
+        {
+            studentGroupsIds = await _studentGroupsRepo.GetGroupIdsByStudentIdAsync(student.Id);
+            if (studentGroupsIds is null)
+                throw new Exception();
+        }
+        catch
+        {
+            throw new BadHttpRequestException(statusCode: 400, message: "Не удаётся получить группы ученика");
+        }
+        if (studentGroupsIds.Count <= 0)
+            return [];
+
 
         var groups = new List<GroupModel>();
         foreach (var id in studentGroupsIds)
