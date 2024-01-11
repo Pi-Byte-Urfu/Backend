@@ -166,12 +166,31 @@ public class GroupService
 
     public async Task<CourseGetAllDto> GetGroupCourses(int groupId)
     {
+        var courses = await GetGroupCoursesModels(groupId);
+        return _courseService.MapCoursesToGetAllDto(courses);
+    }
+
+    private async Task<List<CourseModel>> GetGroupCoursesModels(int groupId)
+    {
         var courseIds = await _groupCoursesRepo.GetCourseIdsByGroupIdAsync(groupId);
         var courses = new List<CourseModel>();
         foreach (var courseId in courseIds)
             courses.Add(await _courseRepo.GetEntityByIdAsync(courseId));
 
-        return _courseService.MapCoursesToGetAllDto(courses);
+        return courses;
+    }
+
+    public async Task<CourseGetAllDto> GetAvailableGroupCourses(int groupId)
+    {
+        var allCourses = await _courseRepo.GetAllEntitiesAsync();
+        var takenGroupCourses = await GetGroupCoursesModels(groupId);
+
+        var availableCourses = new List<CourseModel>();
+        foreach (var course in allCourses)
+            if (!takenGroupCourses.Contains(course))
+                availableCourses.Add(course);
+
+        return _courseService.MapCoursesToGetAllDto(availableCourses);
     }
 
     public async Task AddStudentToGroupAsync(int userId, int groupId)

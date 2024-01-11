@@ -64,6 +64,13 @@ public class GroupController
         return await _groupService.GetGroupCourses(groupId);
     }
 
+    [HttpGet]
+    [Route(template: "{groupId}/courses/available")]
+    public async Task<CourseGetAllDto> GetAvailableGroupCourses([FromRoute] int groupId)
+    {
+        return await _groupService.GetAvailableGroupCourses(groupId);
+    }
+
     [HttpPost]
     public async Task<BaseIdDto> CreateGroup([FromBody] GroupCreateDto createGroupDto)
     {
