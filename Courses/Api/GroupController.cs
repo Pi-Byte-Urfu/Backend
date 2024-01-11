@@ -68,7 +68,7 @@ public class GroupController
     [Route(template: "{groupId}/courses/available")]
     public async Task<CourseGetAllDto> GetAvailableGroupCourses([FromRoute] int groupId)
     {
-        return await _groupService.GetAvailableGroupCourses(groupId);
+        return await _groupService.GetAvailableGroupCourses(groupId); // just to push in master to rebuild container with CI/CD
     }
 
     [HttpPost]
