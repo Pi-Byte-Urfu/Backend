@@ -146,7 +146,7 @@ public class GroupService
         await _groupRepo.UpdateEntityAsync(id, updateGroupDto);
     }
 
-    public async Task ConnectToGroupAsync(UserAuthInfo authInfo, GroupConnectDto connectToGroupDto)
+    public void ConnectToGroupAsync(UserAuthInfo authInfo, GroupConnectDto connectToGroupDto)
     {
         var accountType = authInfo.UserType;
         if (accountType is not Auth.Enums.UserType.Student)
@@ -154,7 +154,7 @@ public class GroupService
 
         var userId = authInfo.Id;
         var groupId = connectToGroupDto.GroupId;
-        await AddStudentToGroupAsync(userId, groupId);
+        AddStudentToGroupAsync(userId, groupId).RunSynchronously();
     }
 
     public async Task DeleteCourseFromGroup(int groupId, GroupAddCourseToGroupDto groupAddCourseToGroupDto)
@@ -204,7 +204,7 @@ public class GroupService
             StudentId = await GetStudentIdByUserIdAsync(userId),
         };
 
-        await _studentGroupsRepo.CreateEntityAsync(newConnectionModel);
+        _studentGroupsRepo.CreateEntityAsync(newConnectionModel).RunSynchronously();
     }
 
     public async Task<int> GetStudentIdByUserIdAsync(int userId)
