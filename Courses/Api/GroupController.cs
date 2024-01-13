@@ -26,7 +26,7 @@ public class GroupController
         if (authInfo is null)
             throw new BadHttpRequestException(statusCode: 401, message: "Авторизуйтесь прежде, чем добавляться в группу");
 
-        _groupService.ConnectToGroupAsync(authInfo, connectToGroupDto);
+        await _groupService.ConnectToGroupAsync(authInfo, connectToGroupDto);
         return Results.Ok();
     }
 

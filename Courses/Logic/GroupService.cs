@@ -1,5 +1,7 @@
 ﻿using Backend.Auth.Dal.Interfaces;
 using Backend.Auth.Dto;
+using Backend.Chat.Dal.Interfaces;
+using Backend.Chat.Dal.Models;
 using Backend.Courses.Dal.Interfaces;
 using Backend.Courses.Dal.Models;
 using Backend.Courses.Dto;
@@ -8,43 +10,30 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Backend.Courses.Logic;
 
-public class GroupService
+public class GroupService(
+    IGroupRepo groupRepo,
+    IStudentGroupsRepo studentGroupsRepo,
+    IStudentRepo studentRepo,
+    ITeacherRepo teacherRepo,
+    IAccountRepo accountRepo,
+    IGroupCoursesRepo groupCoursesRepo,
+    IChatRepo chatRepo,
+    ICourseRepo courseRepo,
+    CourseService courseService,
+    IHttpContextAccessor httpContextAccessor)
 {
-    private IGroupRepo _groupRepo;
-    private IStudentGroupsRepo _studentGroupsRepo;
-    private IStudentRepo _studentRepo;
-    private ITeacherRepo _teacherRepo;
-    private IAccountRepo _accountRepo;
-    private ICourseRepo _courseRepo;
-    private IGroupCoursesRepo _groupCoursesRepo;
+    private IGroupRepo _groupRepo = groupRepo;
+    private IStudentGroupsRepo _studentGroupsRepo = studentGroupsRepo;
+    private IStudentRepo _studentRepo = studentRepo;
+    private ITeacherRepo _teacherRepo = teacherRepo;
+    private IAccountRepo _accountRepo = accountRepo;
+    private ICourseRepo _courseRepo = courseRepo;
+    private IGroupCoursesRepo _groupCoursesRepo = groupCoursesRepo;
+    private IChatRepo _chatRepo = chatRepo;
 
-    private CourseService _courseService;
+    private CourseService _courseService = courseService;
 
-    private IHttpContextAccessor _httpContextAccessor;
-
-    public GroupService(
-        IGroupRepo groupRepo,
-        IStudentGroupsRepo studentGroupsRepo,
-        IStudentRepo studentRepo,
-        ITeacherRepo teacherRepo,
-        IAccountRepo accountRepo,
-        IGroupCoursesRepo groupCoursesRepo,
-        ICourseRepo courseRepo,
-        CourseService courseService,
-        IHttpContextAccessor httpContextAccessor)
-    {
-        _groupRepo = groupRepo;
-        _studentGroupsRepo = studentGroupsRepo;
-        _studentRepo = studentRepo;
-        _teacherRepo = teacherRepo;
-        _accountRepo = accountRepo;
-        _groupCoursesRepo = groupCoursesRepo;
-        _courseRepo = courseRepo;
-
-        _courseService = courseService;
-
-        _httpContextAccessor = httpContextAccessor;
-    }
+    private IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<GroupGetDto> GetGroupByIdAsync(int id)
     {
@@ -146,7 +135,7 @@ public class GroupService
         await _groupRepo.UpdateEntityAsync(id, updateGroupDto);
     }
 
-    public void ConnectToGroupAsync(UserAuthInfo authInfo, GroupConnectDto connectToGroupDto)
+    public async Task ConnectToGroupAsync(UserAuthInfo authInfo, GroupConnectDto connectToGroupDto)
     {
         var accountType = authInfo.UserType;
         if (accountType is not Auth.Enums.UserType.Student)
@@ -154,7 +143,17 @@ public class GroupService
 
         var userId = authInfo.Id;
         var groupId = connectToGroupDto.GroupId;
-        AddStudentToGroupAsync(userId, groupId).RunSynchronously();
+        await AddStudentToGroupAsync(userId, groupId);
+
+        var group = await _groupRepo.GetEntityByIdAsync(groupId);
+        var teacherUserId = (await _teacherRepo.GetEntityByIdAsync(group.TeacherId)).UserId;
+        await CreateChatAfterConnectionToGroup(teacherUserId, userId);
+    }
+
+    private async Task CreateChatAfterConnectionToGroup(int teacherUserId, int studentUserId)
+    {
+        var newChat = new ChatModel() { User1Id = teacherUserId, User2Id = studentUserId };
+        await _chatRepo.CreateEntityAsync(newChat);
     }
 
     public async Task DeleteCourseFromGroup(int groupId, GroupAddCourseToGroupDto groupAddCourseToGroupDto)
@@ -204,7 +203,7 @@ public class GroupService
             StudentId = await GetStudentIdByUserIdAsync(userId),
         };
 
-        _studentGroupsRepo.CreateEntityAsync(newConnectionModel).RunSynchronously();
+        await _studentGroupsRepo.CreateEntityAsync(newConnectionModel);
     }
 
     public async Task<int> GetStudentIdByUserIdAsync(int userId)

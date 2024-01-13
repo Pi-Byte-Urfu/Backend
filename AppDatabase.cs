@@ -1,4 +1,5 @@
 ﻿using Backend.Auth.Dal.Models;
+using Backend.Chat.Dal.Models;
 using Backend.CoursePages.Dal.Models;
 using Backend.Courses.Dal.Models;
 using Backend.Progress.Dal.Models;
@@ -39,6 +40,10 @@ public class AppDatabase : DbContext
     // Progress
     public DbSet<TaskAnswerModel> TaskAnswers{ get; set; }
     public DbSet<TaskScoreModel> TaskScores { get; set; }
+
+    // Chat
+    public DbSet<ChatModel> Chats { get; set; }
+    public DbSet<MessageModel> Messages { get; set; }
 
     public AppDatabase(DbContextOptions<AppDatabase> options, IConfiguration config) : base(options)
     {

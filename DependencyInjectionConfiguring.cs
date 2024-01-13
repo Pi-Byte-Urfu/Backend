@@ -6,6 +6,9 @@ using Backend.Base.Services;
 using Backend.Base.Services.Filters;
 using Backend.Base.Services.Interfaces;
 using Backend.Base.Services.ModelBinders;
+using Backend.Chat.Dal;
+using Backend.Chat.Dal.Interfaces;
+using Backend.Chat.Logic;
 using Backend.CoursePages.Dal;
 using Backend.CoursePages.Dal.Interfaces;
 using Backend.CoursePages.Logic;
@@ -17,7 +20,6 @@ using Backend.Progress.Dal.Interfaces;
 using Backend.Progress.Logic;
 
 using Microsoft.EntityFrameworkCore;
-using Microsoft.OpenApi.Models;
 
 namespace Backend;
 
@@ -61,6 +63,7 @@ public class DependencyInjectionConfiguring
         RegisterCoursesDbRepos();
         RegisterCoursePagesDbRepos();
         RegisterProgressDbRepos();
+        RegisterChatDbRepos();
     }
 
     private void RegisterAuthDbRepos()
@@ -101,6 +104,12 @@ public class DependencyInjectionConfiguring
         _services.AddScoped<ITaskScoreRepo, TaskScoreRepo>();
     }
 
+    private void RegisterChatDbRepos()
+    {
+        _services.AddScoped<IMessageRepo, MessageRepo>();
+        _services.AddScoped<IChatRepo, ChatRepo>();
+    }
+
     private void RegisterBusinessServices()
     {
         RegisterHelperServices();
@@ -108,6 +117,7 @@ public class DependencyInjectionConfiguring
         RegisterCoursesLogic();
         RegisterCoursePagesLogic();
         RegisterProgressLogic();
+        RegisterChatLogic();
     }
 
     private void RegisterAuthLogic()
@@ -132,6 +142,11 @@ public class DependencyInjectionConfiguring
     private void RegisterProgressLogic()
     {
         _services.AddScoped<ProgressService>();
+    }
+
+    private void RegisterChatLogic()
+    {
+        _services.AddScoped<ChatService>();
     }
 
     private void RegisterHelperServices()
