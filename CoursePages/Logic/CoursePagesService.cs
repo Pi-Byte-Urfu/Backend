@@ -98,21 +98,21 @@ public class CoursePagesService
 
     public async Task DeletePage(int pageId)
     {
-        var basePage = await _coursePageRepo.GetEntityByIdAsync(pageId);
-        switch (basePage.PageType)
-        {
-            case Enums.CoursePageType.Theory:
-                await DeleteTheoryPage(pageId);
-                break;
-            case Enums.CoursePageType.Test:
-                await DeleteTestPage(pageId);
-                break;
-            case Enums.CoursePageType.Task:
-                await DeleteTaskPage(pageId);
-                break;
-            default:
-                break;
-        }
+        //var basePage = await _coursePageRepo.GetEntityByIdAsync(pageId);
+        //switch (basePage.PageType)
+        //{
+        //    case Enums.CoursePageType.Theory:
+        //        await DeleteTheoryPage(pageId);
+        //        break;
+        //    case Enums.CoursePageType.Test:
+        //        await DeleteTestPage(pageId);
+        //        break;
+        //    case Enums.CoursePageType.Task:
+        //        await DeleteTaskPage(pageId);
+        //        break;
+        //    default:
+        //        break;
+        //}
 
         await _coursePageRepo.DeleteEntityByIdAsync(pageId);
     }

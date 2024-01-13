@@ -20,46 +20,44 @@ public class CoursePageRepo(
     {
         var page = await base.GetEntityByIdAsync(id);
 
-        var theories = new List<TheoryPageModel>();
-        var tasks = new List<TaskPageModel>();
         if (page.PageType == Enums.CoursePageType.Theory)
         {
-            var theoryPage = (await theoryPageRepo.GetAllEntitiesAsync()).Where(x => x.PageId == page.Id).First();
+            var theories = new List<TheoryPageModel>();
+
+            var theoryPage = (await theoryPageRepo.GetAllEntitiesAsync()).Where(x => x.PageId == id).First();
             theories.Add(theoryPage);
+
+            foreach (var theory in theories)
+                await theoryPageRepo.DeleteEntityByIdAsync(theory.Id);
+
         }
         else if (page.PageType == Enums.CoursePageType.Task)
         {
-            var taskPage = (await taskPageRepo.GetAllEntitiesAsync()).Where(x => x.PageId == page.Id).First();
+            var tasks = new List<TaskPageModel>();
+            var taskPage = (await taskPageRepo.GetAllEntitiesAsync()).Where(x => x.PageId == id).First();
             tasks.Add(taskPage);
-        }
 
-        var taskAnswers = new List<TaskAnswerModel>();
-        foreach (var taskPage in tasks)
-        {
+            var taskAnswers = new List<TaskAnswerModel>();
+
             var pageId = taskPage.PageId;
-            var s = (await taskAnswerRepo.GetAllEntitiesAsync()).Where(x => x.PageId == pageId).First();
-            taskAnswers.Add(s);
+            var s = (await taskAnswerRepo.GetAllEntitiesAsync()).Where(x => x.PageId == pageId).ToList();
+            taskAnswers.AddRange(s);
+
+            var taskScores = new List<TaskScoreModel>();
+
+            var s2 = (await taskScoreRepo.GetAllEntitiesAsync()).Where(x => x.PageId == pageId).ToList();
+
+            taskScores.AddRange(s2);
+
+            foreach (var score in taskScores)
+                await taskScoreRepo.DeleteEntityByIdAsync(score.Id);
+
+            foreach (var answer in taskAnswers)
+                await taskAnswerRepo.DeleteEntityByIdAsync(answer.Id);
+
+            foreach (var task in tasks)
+                await taskPageRepo.DeleteEntityByIdAsync(task.Id);
         }
-
-        var taskScores = new List<TaskScoreModel>();
-        foreach (var taskPage in tasks)
-        {
-            var pageId = taskPage.PageId;
-            var s = (await taskScoreRepo.GetAllEntitiesAsync()).Where(x => x.PageId == pageId).First();
-            taskScores.Add(s);
-        }
-
-        foreach (var score in taskScores)
-            await taskScoreRepo.DeleteEntityByIdAsync(score.Id);
-
-        foreach (var answer in taskAnswers)
-            await taskAnswerRepo.DeleteEntityByIdAsync(answer.Id);
-
-        foreach (var task in tasks)
-            await taskPageRepo.DeleteEntityByIdAsync(task.Id);
-
-        foreach (var theory in theories)
-            await theoryPageRepo.DeleteEntityByIdAsync(theory.Id);
 
         var id2 = await base.DeleteEntityByIdAsync(id);
         await _database.SaveChangesAsync();
