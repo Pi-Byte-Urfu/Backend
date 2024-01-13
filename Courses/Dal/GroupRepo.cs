@@ -5,13 +5,29 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Backend.Courses.Dal;
 
-public class GroupRepo : BaseRepo<GroupModel>, IGroupRepo
+public class GroupRepo(
+    AppDatabase database,
+    IStudentGroupsRepo studentGroupsRepo,
+    IGroupCoursesRepo groupCoursesRepo
+    ) : BaseRepo<GroupModel>(database), IGroupRepo
 {
-    protected AppDatabase _database;
+    protected AppDatabase _database = database;
 
-    public GroupRepo(AppDatabase database) : base(database)
+    public override async Task<int> DeleteEntityByIdAsync(int id)
     {
-        _database = database;
+        var allStudentGroups = (await studentGroupsRepo.GetAllEntitiesAsync()).Where(x => x.GroupId == id).ToList();
+        var allGroupCourses = (await groupCoursesRepo.GetAllEntitiesAsync()).Where(x => x.GroupId == id).ToList();
+
+        foreach (var a in allGroupCourses)
+            await groupCoursesRepo.DeleteEntityByIdAsync(a.Id);
+
+        foreach (var b in allStudentGroups)
+            await studentGroupsRepo.DeleteEntityByIdAsync(b.Id);
+
+        var id2 = await base.DeleteEntityByIdAsync(id);
+        await _database.SaveChangesAsync();
+
+        return id2;
     }
 
     public async Task<List<GroupModel>> GetAllTeacherGroupsAsync(int teacherId)
