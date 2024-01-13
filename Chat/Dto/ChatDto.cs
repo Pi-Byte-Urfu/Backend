@@ -11,7 +11,7 @@ public class ChatGetAllChatsDto : BaseDto
         public string UserName { get; set; }
         public string UserSurname { get; set; }
         public string UserPatronymic { get; set; }
-        public string LastMessageId { get; set; }
+        public int LastMessageId { get; set; }
     }
 
     public List<ChatDto> Chats { get; set; }

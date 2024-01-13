@@ -33,6 +33,8 @@ public class GroupService(
 
     private CourseService _courseService = courseService;
 
+    private bool isConnectionExists = false;
+
     private IHttpContextAccessor _httpContextAccessor = httpContextAccessor;
 
     public async Task<GroupGetDto> GetGroupByIdAsync(int id)
@@ -137,6 +139,14 @@ public class GroupService(
 
     public async Task ConnectToGroupAsync(UserAuthInfo authInfo, GroupConnectDto connectToGroupDto)
     {
+        if (isConnectionExists)
+        {
+            Console.WriteLine("WE BLOCKED THIS");
+            return;
+        }
+
+        isConnectionExists = true;
+
         var accountType = authInfo.UserType;
         if (accountType is not Auth.Enums.UserType.Student)
             throw new BadHttpRequestException(statusCode: 400, message: "Добавляться в группы могут только ученики");
@@ -148,6 +158,8 @@ public class GroupService(
         var group = await _groupRepo.GetEntityByIdAsync(groupId);
         var teacherUserId = (await _teacherRepo.GetEntityByIdAsync(group.TeacherId)).UserId;
         await CreateChatAfterConnectionToGroup(teacherUserId, userId);
+
+        isConnectionExists = false;
     }
 
     private async Task CreateChatAfterConnectionToGroup(int teacherUserId, int studentUserId)

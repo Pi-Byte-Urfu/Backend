@@ -28,9 +28,9 @@ public class ChatController(ChatService chatService)
 
     [HttpGet]
     [Route("message/{messageId}")]
-    public async Task<ChatGetOneMessageDto> GetOneMessage([FromRoute] int messageId)
+    public async Task<ChatGetOneMessageDto> GetOneMessage([FromHeader] UserAuthInfo authInfo, [FromRoute] int messageId)
     {
-        return await _chatService.GetMessageAsync(messageId);
+        return await _chatService.GetMessageAsync(authInfo, messageId);
     }
 
     [HttpPost]
