@@ -33,6 +33,14 @@ public class AccountController
         return account;
     }
 
+    [HttpGet]
+    [Route(template: "user/{userId}")]
+    public async Task<AccountGetDto> GetAccountByUserIdRoute([FromRoute] int userId)
+    {
+        var account = await _accountService.GetAccountByUserIdAsync(userId);
+        return account;
+    }
+
     //[HttpDelete]
     //[Route(template: "{id}")]
     //public async Task DeleteAccountById([FromRoute] int id)
