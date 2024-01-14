@@ -1,4 +1,5 @@
 ﻿using Backend.Auth.Dto;
+using Backend.Chat.Dal.Models;
 using Backend.Chat.Dto;
 using Backend.Chat.Logic;
 
@@ -35,9 +36,9 @@ public class ChatController(ChatService chatService)
 
     [HttpPost]
     [Route("{chatId}/message")]
-    public async Task<IResult> SendMessage([FromHeader] UserAuthInfo authInfo, [FromRoute] int chatId, [FromBody] ChatSendMessageDto messageDto)
+    public async Task<MessageModel> SendMessage([FromHeader] UserAuthInfo authInfo, [FromRoute] int chatId, [FromBody] ChatSendMessageDto messageDto)
     {
-        await _chatService.SendMessageAsync(authInfo, chatId, messageDto);
-        return Results.Ok();
+        var message = await _chatService.SendMessageAsync(authInfo, chatId, messageDto);
+        return message;
     }
 }

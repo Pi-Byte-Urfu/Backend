@@ -66,7 +66,7 @@ public class ChatService(
         return new ChatGetOneMessageDto() { Message = mappedMessageId };
     }
 
-    public async Task SendMessageAsync(UserAuthInfo authInfo, int chatId, ChatSendMessageDto chatSendMessageDto)
+    public async Task<MessageModel> SendMessageAsync(UserAuthInfo authInfo, int chatId, ChatSendMessageDto chatSendMessageDto)
     {
         var newMessage = new MessageModel() { 
             ChatId = chatId,
@@ -76,7 +76,8 @@ public class ChatService(
             UserId = chatSendMessageDto.UserId
         };
 
-        await messageRepo.CreateEntityAsync(newMessage);
+        var id = await messageRepo.CreateEntityAsync(newMessage);
+        return await messageRepo.GetEntityByIdAsync(id);
     }
 
     internal enum GettingUserChatIndex
